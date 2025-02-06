@@ -72,3 +72,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+/Crown the Void/Library/Artifacts
+/Crown the Void/Library/PackageCache
+/Crown the Void/Library/Bee
+/Crown the Void/UserSettings
+/Crown the Void/Logs
