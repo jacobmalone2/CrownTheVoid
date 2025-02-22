@@ -9007,8 +9007,16 @@ PrefabInstance:
       value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 1477109834346882312, guid: 26d9c7a6c0e99d34bb0974ba71f0f72b, type: 3}
+      propertyPath: SceneName
+      value: MainHallway
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477109834346882312, guid: 26d9c7a6c0e99d34bb0974ba71f0f72b, type: 3}
       propertyPath: sceneName
       value: MainHallway
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196001621144276692, guid: 26d9c7a6c0e99d34bb0974ba71f0f72b, type: 3}
+      propertyPath: SceneName
+      value: Barracks
       objectReference: {fileID: 0}
     - target: {fileID: 3196001621144276692, guid: 26d9c7a6c0e99d34bb0974ba71f0f72b, type: 3}
       propertyPath: sceneName
