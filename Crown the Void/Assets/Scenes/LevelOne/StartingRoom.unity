@@ -11603,7 +11603,7 @@ MonoBehaviour:
   Player: {fileID: 0}
   SceneName: MainHallway
   x: 0
-  y: 2
+  y: 0.01
   z: -20
 --- !u!1001 &1482738855757986227
 PrefabInstance:
