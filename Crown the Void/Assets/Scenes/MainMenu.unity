@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 114670906}
   - component: {fileID: 114670905}
   m_Layer: 5
-  m_Name: yeet
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
