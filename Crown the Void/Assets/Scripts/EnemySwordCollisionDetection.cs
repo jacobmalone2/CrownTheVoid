@@ -10,7 +10,7 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && enemyBehavior.AlreadyAttacked && enemyBehavior.CanDealDamage)
         {
-            other.gameObject.GetComponent<PlayerController>().TakeDamage(2);
+            other.gameObject.GetComponent<PlayerController>().TakeDamage(enemyBehavior.dmgPerHit);
             enemyBehavior.HitPlayer();
         }
     }

@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Hud");
+        SceneManager.LoadScene("StartingRoom");
     }
     public void QuitGame()
     {

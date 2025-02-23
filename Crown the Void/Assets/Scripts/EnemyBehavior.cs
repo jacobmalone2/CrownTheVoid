@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class EnemyBehavior : MonoBehaviour
 {
-    private const float CAN_DAMAGE_COOLDOWN = 1.0f;
+    private const float CAN_DAMAGE_COOLDOWN = 0.6f;
     private const float TAKE_DAMAGE_COOLDOWN = 1.0f;
 
     [Header("AI Fields")]
@@ -25,6 +25,8 @@ public class EnemyBehavior : MonoBehaviour
 
     [SerializeField]
     private float timeBetweenAttacks = 1f;
+    [SerializeField] public int dmgPerHit = 10;
+
     [SerializeField]
     public int health = 10;
     [SerializeField]

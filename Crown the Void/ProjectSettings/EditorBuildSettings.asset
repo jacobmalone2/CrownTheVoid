@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hud.unity
     guid: 29b9ba7bae1189a42a02e476b7a4ecfe
+  - enabled: 1
+    path: Assets/Scenes/LevelOne/StartingRoom.unity
+    guid: 775418f1a814f8645ac1a2afe2bbe06b
+  - enabled: 1
+    path: Assets/Scenes/LevelOne/MainHallway.unity
+    guid: 79bd0a494aeb9804fbc5fcbb4acc763b
+  - enabled: 1
+    path: Assets/Scenes/LevelOne/GreatHall.unity
+    guid: 7e959df88a91a864297c39d41742f0d3
+  - enabled: 1
+    path: Assets/Scenes/LevelOne/Barracks.unity
+    guid: 19ed2ccf283890341aea70815b930d50
   m_configObjects: {}

@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     private Camera m_Camera;
     private Animator m_Animator;
+    private HealthBar healthBar;
 
     private Vector3 m_Movement;
     private MoveAnim m_moveAnim;
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     {
         m_Camera = Camera.main;
         m_Animator = GetComponent<Animator>();
+        healthBar = GetComponentInChildren<HealthBar>();
     }
 
     //---------------------------------------------------
@@ -354,6 +356,7 @@ public class PlayerController : MonoBehaviour
         if (!m_isDodging)
         {
             playerHealth -= hitPoints;
+            healthBar.TookDamage();
         }
         
         if (playerHealth <= 0)

@@ -8,23 +8,27 @@ public class HealthBar : MonoBehaviour
 {
     public Slider healthBar;
     public TextMeshProUGUI healthText;
-    PlayerHealth playerHealth;
+    PlayerController pc;
+    private int playerHealth;
     public Color DarkRed = new(176, 0, 0, 255);
 
     void Start()
     {
-        playerHealth = GameObject.Find("Player").GetComponent<PlayerHealth>();
-        
+        pc = GameObject.Find("PlayerObj").GetComponent<PlayerController>();
+        playerHealth = pc.playerHealth;
+        TookDamage();
     }
-    void Update()
+    public void TookDamage()
     {
-        healthBar.value = playerHealth.health;
-        healthText.text = playerHealth.health.ToString();
-        if (playerHealth.health > 60)// like to change these to percentages based off max health
+        playerHealth = pc.playerHealth;
+        
+        healthBar.value = playerHealth;
+        healthText.text = playerHealth.ToString();
+        if (playerHealth > 60)// like to change these to percentages based off max health
         {
             healthBar.fillRect.GetComponent<Image>().color = Color.green;
         }
-        else if (playerHealth.health > 30)
+        else if (playerHealth > 30)
         {
             healthBar.fillRect.GetComponent<Image>().color = Color.yellow;
         }
