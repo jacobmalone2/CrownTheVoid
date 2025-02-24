@@ -20,9 +20,9 @@ public class PlayerController : MonoBehaviour
         Right
     }
 
-    [SerializeField] private float playerSpeed = 1.0f;
-    [SerializeField] private float rotationSpeed = 1.0f;
-    [SerializeField] public int playerHealth = 10;
+    [SerializeField] private float playerSpeed = 5.0f;
+    [SerializeField] private float rotationSpeed = 10.0f;
+    [SerializeField] public int playerHealth;
 
     private Camera m_Camera;
     private Animator m_Animator;
@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private bool m_isAlive = true;
 
     public bool IsAttacking { get => m_isAttacking; }
+
+    public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
     // UI
     public GameObject mainMenuButton;
@@ -65,6 +67,7 @@ public class PlayerController : MonoBehaviour
         m_Camera = Camera.main;
         m_Animator = GetComponent<Animator>();
         healthBar = GetComponentInChildren<HealthBar>();
+        playerHealth = 100;
     }
 
     //---------------------------------------------------
@@ -360,9 +363,6 @@ public class PlayerController : MonoBehaviour
         mainMenuButton.SetActive(true);
         deathText.SetActive(true);
         grayOut.SetActive(true);
-
-
-
     }
 
     //-----------------------------------------------------------------------
@@ -384,11 +384,17 @@ public class PlayerController : MonoBehaviour
     // Restart level and reset player functions
     public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);      
-
+        SceneManager.LoadScene("StartingRoom");
+        retryLevelButton.SetActive(false);
+        mainMenuButton.SetActive(false);
+        deathText.SetActive(false);
+        grayOut.SetActive(false);
+        Instantiate(newPlayerObject, new Vector3(0, 0, 0), Quaternion.identity).name = "PlayerObj";
+        Destroy(gameObject);
     }
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        Destroy(gameObject);
     }
 }

@@ -18,8 +18,10 @@ public class HealthBar : MonoBehaviour
         playerHealth = pc.playerHealth;
         TookDamage();
     }
+
     public void TookDamage()
     {
+        pc = GameObject.Find("PlayerObj").GetComponent<PlayerController>();
         playerHealth = pc.playerHealth;
         
         healthBar.value = playerHealth;

@@ -27,5 +27,7 @@ public class Win : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        Time.timeScale = 1;
+        Destroy(Player);
     }
 }

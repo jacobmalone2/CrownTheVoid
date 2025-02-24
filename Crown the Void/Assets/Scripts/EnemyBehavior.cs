@@ -64,7 +64,6 @@ public class EnemyBehavior : MonoBehaviour
         StartCoroutine(StartGame(startDelay));
         playerCharacter = GameObject.FindWithTag("Player");
         cs = playerCharacter.GetComponent<PlayerController>();
-        Debug.Log(cs.playerHealth);
     }
 
     IEnumerator StartGame(float startDelay)

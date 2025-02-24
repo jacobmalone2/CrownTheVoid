@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject playerObject;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene("StartingRoom");
+        Instantiate(playerObject, new Vector3(0, 0, 0), Quaternion.identity).name = "PlayerObj";
     }
     public void QuitGame()
     {

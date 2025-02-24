@@ -5890,8 +5890,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2.75, z: 2}
-  m_Center: {x: -0.8200989, y: 1.375, z: -0.00000035762787}
+  m_Size: {x: 2, y: 2.75, z: 2.308075}
+  m_Center: {x: -0.8200989, y: 1.375, z: -0.15403771}
 --- !u!114 &439210006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41367,8 +41367,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2.75, z: 2}
-  m_Center: {x: -0.8200989, y: 1.375, z: -0.00000035762787}
+  m_Size: {x: 2, y: 2.75, z: 2.3905811}
+  m_Center: {x: -0.8200989, y: 1.375, z: 0.19529033}
 --- !u!23 &4139485605040661582
 MeshRenderer:
   m_ObjectHideFlags: 0
