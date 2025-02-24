@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -39,6 +40,14 @@ public class PlayerController : MonoBehaviour
     private bool m_isAlive = true;
 
     public bool IsAttacking { get => m_isAttacking; }
+
+    // UI
+    public GameObject mainMenuButton;
+    public GameObject retryLevelButton;
+    public GameObject deathText;
+    public GameObject grayOut;
+
+    
 
     //------------------------------
     // Persistant player data, yay!
@@ -346,6 +355,14 @@ public class PlayerController : MonoBehaviour
     {
         m_isAlive = false;
         m_Animator.SetTrigger("Die");
+        // Death UI
+        retryLevelButton.SetActive(true);
+        mainMenuButton.SetActive(true);
+        deathText.SetActive(true);
+        grayOut.SetActive(true);
+
+
+
     }
 
     //-----------------------------------------------------------------------
@@ -363,5 +380,15 @@ public class PlayerController : MonoBehaviour
         {
             Die();
         }
+    }
+    // Restart level and reset player functions
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);      
+
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
