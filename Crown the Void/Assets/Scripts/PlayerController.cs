@@ -73,7 +73,19 @@ public class PlayerController : MonoBehaviour
     //---------------------------------------------------
     // Update is called once per frame
     //---------------------------------------------------
-    void Update()
+
+    private void Update()
+    {
+        if (m_isAlive)
+        {
+            //-------------------
+            //  Player ability
+            //-------------------
+
+            CheckForAbility();
+        }
+    }
+        void FixedUpdate()
     {
         if (m_isAlive)
         {
@@ -98,11 +110,6 @@ public class PlayerController : MonoBehaviour
 
                 RotatePlayer();
             }
-
-            //-------------------
-            //  Player ability
-            //-------------------
-            CheckForAbility();
         }
     }
 
