@@ -1,0 +1,540 @@
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class PlayerController : MonoBehaviour
+{
+    private const float INTERACT_DURATION = 1.3f;
+    private const float ITEM_USE_DURATION = 1.6f;
+    private const float TIME_TO_HEAL = 0.6f;
+    private const float HEAL_FACTOR = 0.25f;    // Percentage of max health to heal by when using health potions
+    private const float ATTACK_DURATION = 0.7f;
+    private const float BASH_DURATION = 0.4f;
+    private const float DODGE_DURATION = 0.25f;
+    private const float DODGE_COOLDOWN = 0.5f;
+    private const float DODGE_SPEED_MULTIPLIER = 3f;
+
+    private enum MoveAnim   // Enumeration type to define movement directions for animations
+    {
+        Idle,
+        Forward,
+        Backward,
+        Left,
+        Right
+    }
+
+    [SerializeField] private float playerSpeed = 5.0f;
+    [SerializeField] private float rotationSpeed = 10.0f;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] public int playerHealth;
+    [SerializeField] private GameObject swordObject;
+    [SerializeField] private GameObject potionObject;
+
+    private Camera m_Camera;
+    private Animator m_Animator;
+    private InventoryManager m_Inventory;
+    private HealthBar healthBar;
+
+    private Vector3 m_Movement;
+    private MoveAnim m_moveAnim;
+
+    private float m_camDistanceToPlayer = 15.5f;
+    private bool m_isAttacking = false;
+    private bool m_isDodging = false;
+    private bool m_isBashing = false;
+    private bool m_canDodge = true;
+    private bool m_isBlocking = false;
+    private bool m_takingAction = false;
+    private bool m_isAlive = true;
+
+    public bool IsAttacking { get => m_isAttacking; }
+    public bool IsBlocking { get => m_isBlocking; }
+    public bool IsBashing { get => m_isBashing; }
+    public bool TakingAction { get => m_takingAction; }
+
+    public GameObject newPlayerObject;  // Used to spawn a new player character on reset
+
+    // UI
+    public GameObject mainMenuButton;
+    public GameObject retryLevelButton;
+    public GameObject deathText;
+    public GameObject grayOut;
+
+    
+
+    //------------------------------
+    // Persistant player data, yay!
+    //------------------------------
+    void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
+    //---------------------------------------------------
+    // Start is called before the first frame update
+    //---------------------------------------------------
+    void Start()
+    {
+        m_Camera = Camera.main;
+        m_Animator = GetComponent<Animator>();
+        m_Inventory = GetComponent<InventoryManager>();
+        healthBar = GetComponentInChildren<HealthBar>();
+        playerHealth = maxHealth;
+    }
+
+    //---------------------------------------------------
+    // Update is called once per frame
+    //---------------------------------------------------
+    private void Update()
+    {
+        if (m_isAlive)
+        {
+            //-------------------
+            //  Player ability
+            //-------------------
+
+            CheckForAbility();
+        }
+    }
+        void FixedUpdate()
+    {
+        if (m_isAlive)
+        {
+            // Only move and rotate if no ability is active
+            if (!m_takingAction)
+            {
+                //-------------------
+                //  Player movement
+                //-------------------
+
+                MovePlayer();
+
+                //-------------------
+                //  Player animation
+                //-------------------
+
+                AnimatePlayer();
+
+                //-------------------
+                //  Player Rotation
+                //-------------------
+
+                RotatePlayer();
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //*************************************************************************
+    //                             ABILITY METHODS
+    //*************************************************************************
+    //-------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------
+    // Checks whether player input a combat ability this frame. If so, play combat
+    // animation, use the ability, and block other actions, including movement and rotation.
+    //----------------------------------------------------------------------------------------
+    private void CheckForAbility()
+    {
+        // Sword swing attack
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && !m_takingAction)
+        {
+            Attack();
+        }
+        // Directional dodge
+        if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge) || m_isDodging)
+        {
+            Dodge();
+        }
+        // Start Block
+        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !m_isDodging)
+        {
+            StartBlock();
+        }
+        // Shield Bash
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isBlocking)
+        {
+            ShieldBash();
+        }
+        // End Block
+        if (Input.GetMouseButtonUp((int)MouseButton.Right) && m_isBlocking)
+        {
+            EndBlock();
+        }
+        // Use Item
+        if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction)
+        {
+            UseItem();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Triggers the attack animation, set the attack and ability flags, and
+    // initiate attack cooldown
+    //-------------------------------------------------------------------------
+    private void Attack()
+    {
+        m_Animator.SetTrigger("Attack");
+        m_isAttacking = true;
+        m_takingAction = true;
+        StartCoroutine(AttackCooldown());
+    }
+
+    // Cooldown for sword swing attack
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(ATTACK_DURATION);
+        m_isAttacking = false;
+        if (!m_isBlocking) m_takingAction = false;
+    }
+
+    //-------------------------------------------------------------------------
+    // Handles the directional dodge ability. Applies the animation, starts the
+    // dodge cooldown, sets dodge and ability flags, and if already performing
+    // the dodge, then applies dodge motion.
+    //-------------------------------------------------------------------------
+    private void Dodge()
+    {
+        if (m_isDodging)    // If player is already dodging, continue to apply movement
+        {
+            if (m_Movement.magnitude == 0)
+            {
+                transform.position = transform.position - transform.forward * 
+                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+            }
+            else
+            {
+                transform.position = transform.position + m_Movement *
+                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+            }
+        }
+        else                // Otherwise, initiate the dodge
+        {
+            // Apply dodge animation according to movement direction
+            switch (m_moveAnim)
+            {
+                case MoveAnim.Idle:
+                    m_Animator.SetTrigger("DodgeBackward");
+                    break;
+                case MoveAnim.Forward:
+                    m_Animator.SetTrigger("DodgeForward");
+                    break;
+                case MoveAnim.Backward:
+                    m_Animator.SetTrigger("DodgeBackward");
+                    break;
+                case MoveAnim.Right:
+                    m_Animator.SetTrigger("DodgeRight");
+                    break;
+                case MoveAnim.Left:
+                    m_Animator.SetTrigger("DodgeLeft");
+                    break;
+            }
+
+            m_isDodging = true;
+            m_takingAction = true;
+            StartCoroutine(DodgeDuration());
+        }
+    }
+
+    // Continues dodge for its duration
+    private IEnumerator DodgeDuration()
+    {
+        yield return new WaitForSeconds(DODGE_DURATION);
+        m_isDodging = false;
+        m_takingAction = false;
+        m_canDodge = false;
+        StartCoroutine(DodgeCooldown());
+    }
+
+    // Cooldown for directional dodge
+    private IEnumerator DodgeCooldown()
+    {
+        yield return new WaitForSeconds(DODGE_COOLDOWN);
+        m_canDodge = true;
+    }
+
+    //---------------------------------------------------------------------------
+    // Triggers the raise shield animation and sets flags for starting to block
+    //---------------------------------------------------------------------------
+    private void StartBlock()
+    {
+        m_Animator.SetBool("IsBlocking", true);
+        m_takingAction = true;
+        m_isBlocking = true;
+    }
+
+    //------------------------------------------------------------------------------
+    // Triggers the bash animation and sets the shield bash flag for bash duration
+    //------------------------------------------------------------------------------
+    private void ShieldBash()
+    {
+        m_Animator.SetTrigger("Bash");
+        m_isBashing = true;
+        Invoke(nameof(ShieldBashReset), BASH_DURATION);
+    }
+
+    private void ShieldBashReset()
+    {
+        m_isBashing = false;
+    }
+
+    //----------------------------------------------------------------
+    // Ends the block animation and clears the flags for blocking
+    //----------------------------------------------------------------
+    private void EndBlock()
+    {
+        m_Animator.SetBool("IsBlocking", false);
+        m_takingAction = false;
+        m_isBlocking = false;
+    }
+
+    //-----------------------------------------------------------
+    // Called by the Interactor when interacting with an object.
+    // Plays the interact animation and stops movement.
+    //-----------------------------------------------------------
+    public void Interact()
+    {
+        m_Animator.SetTrigger("Interact");
+        m_takingAction = true;
+        Invoke(nameof(InteractDuration), INTERACT_DURATION);
+    }
+
+    // Called once the interaction duration has passed to allow movement
+    private void InteractDuration()
+    {
+        m_takingAction = false;
+    }
+
+    //-------------------------------------------------------------------------------------
+    // Uses the currently equipped item in the inventory. Determines which item effect to
+    // activate according to the equipped item, then removes the item from inventory.
+    //-------------------------------------------------------------------------------------
+    private void UseItem()
+    {
+        InventoryManager.ItemType item = m_Inventory.GetEquippedItem();
+        switch (item)
+        {
+            case InventoryManager.ItemType.NullItem:
+                break;
+            case InventoryManager.ItemType.HealthPotion:
+                m_Inventory.RemoveItem();
+                HealthPotionEffect();
+                break;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //*************************************************************************
+    //                          PLAYER MOVEMENT METHODS
+    //*************************************************************************
+    //-------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------
+    // Moves the player based on the given input then applies movement animation
+    //----------------------------------------------------------------------------------------
+    private void MovePlayer()
+    {
+        // Get horizontal and vertical movement value
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        // Set movement direction and give magnitude of 1
+        m_Movement.Set(horizontal, 0f, vertical);
+        m_Movement.Normalize();
+
+        // Move the player
+        transform.position = transform.position + m_Movement * Time.deltaTime * playerSpeed;
+
+        // Find the correct animation for running and dodging based on movement
+        FindMovementAnimation();
+    }
+
+    //----------------------------------------------------------------------------------------
+    // Uses vector math to determine which movement animations should be used for running
+    // and dodging. Finds which way the character is currently moving relative to the direction
+    // they are facing.
+    //----------------------------------------------------------------------------------------
+    private void FindMovementAnimation()
+    {
+        // If player isn't moving, apply the idle animation
+        if (m_Movement.magnitude == 0f)
+        {
+            m_moveAnim = MoveAnim.Idle;
+            return;
+        }
+
+        // Otherwise, get the difference vector between the velocity vector and the forward vector
+        Vector3 diffVec = transform.forward - m_Movement;
+
+        // If the magnitude of this vector is less than 2 - Sqrt(2) then player is moving forward.
+        // If it's greater than Sqrt(2 + Sqrt(2)) then they're moving back.
+        if (diffVec.magnitude <= 2 - Mathf.Sqrt(2))
+        {
+            m_moveAnim = MoveAnim.Forward;
+        }
+        else if (diffVec.magnitude >= Mathf.Sqrt(2 + Mathf.Sqrt(2)))
+        {
+            m_moveAnim = MoveAnim.Backward;
+        }
+        else
+        {
+            // Otherwise, player is moving sideways. Now, get the difference vector
+            // between the velocity vector the right direction vector, and use the
+            // same logic to determine whether they're moving right or left.
+            diffVec = transform.right - m_Movement;
+
+            if (diffVec.magnitude < 2 - Mathf.Sqrt(2))
+            {
+                m_moveAnim = MoveAnim.Right;
+            }
+            else if (diffVec.magnitude > Mathf.Sqrt(2 + Mathf.Sqrt(2)))
+            {
+                m_moveAnim = MoveAnim.Left;
+            }
+            else
+            {
+                m_moveAnim = MoveAnim.Forward;
+            }
+        }
+    }
+
+    // Apply running animation based on the found movement direction.
+    private void AnimatePlayer()
+    {
+        switch(m_moveAnim)
+        {
+            case MoveAnim.Idle:
+                m_Animator.SetTrigger("IsIdle");
+                break;
+            case MoveAnim.Forward:
+                m_Animator.SetTrigger("IsMovingForward");
+                break;
+            case MoveAnim.Backward:
+                m_Animator.SetTrigger("IsMovingBackward");
+                break;
+            case MoveAnim.Right:
+                m_Animator.SetTrigger("IsMovingRight");
+                break;
+            case MoveAnim.Left:
+                m_Animator.SetTrigger("IsMovingLeft");
+                break;
+        }
+    }
+
+    //--------------------------------------------
+    // Rotates the player to look at the mouse
+    //--------------------------------------------
+    private void RotatePlayer()
+    {
+        // Get the mouse position in screen space
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = mousePos.y / Screen.height * (m_camDistanceToPlayer * 2);    // mouse is 10 units away from camera
+
+        // Get the mouse position in world space and the angle to the mouse
+        Vector3 worldMousePos = m_Camera.ScreenToWorldPoint(mousePos);
+        float angleRad = Mathf.Atan2(worldMousePos.z - transform.position.z, worldMousePos.x - transform.position.x);
+        float angleDeg = (180 / Mathf.PI) * angleRad - 90; // Offset by 90 degrees
+
+        // Rotate player to face mouse in world space
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, -angleDeg, 0f), Time.deltaTime * rotationSpeed);
+    }
+
+    //-------------------------------------------------------------------------
+    //*************************************************************************
+    //                           ITEM EFFECT FUNCTIONS
+    //*************************************************************************
+    //-------------------------------------------------------------------------
+
+    //------------------------------------------------------------------
+    // Triggers the item use animation, switches out the sword for the
+    // potion game object, and heals the player for a percentage of
+    // max health after a delay.
+    //------------------------------------------------------------------
+    private void HealthPotionEffect()
+    {
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        potionObject.SetActive(true);
+
+        Invoke(nameof(Heal), TIME_TO_HEAL);
+        Invoke(nameof(ItemUseDuration), ITEM_USE_DURATION);
+    }
+
+    private void Heal()
+    {
+        playerHealth += (int)(HEAL_FACTOR * maxHealth);
+        if (playerHealth > maxHealth) playerHealth = maxHealth;
+        healthBar.TookDamage(); // Update health bar
+    }
+
+    private void ItemUseDuration()
+    {
+        swordObject.SetActive(true);
+        potionObject.SetActive(false);
+        m_takingAction = false;
+    }
+
+    //-------------------------------------------------------------------------
+    //*************************************************************************
+    //                              MISC FUNCTIONS
+    //*************************************************************************
+    //-------------------------------------------------------------------------
+
+
+    //-------------------------------------------------------
+    // Disables player controls and plays death animation
+    //-------------------------------------------------------
+    private void Die()
+    {
+        m_isAlive = false;
+        m_Animator.SetTrigger("Die");
+        // Death UI
+        retryLevelButton.SetActive(true);
+        mainMenuButton.SetActive(true);
+        deathText.SetActive(true);
+        grayOut.SetActive(true);
+    }
+
+    //-----------------------------------------------------------------------
+    // Takes damage equal to hitPoints. When health reaches 0, player dies.
+    //-----------------------------------------------------------------------
+    public void TakeDamage(int hitPoints)
+    {
+        if (!m_isDodging)
+        {
+            playerHealth -= hitPoints;
+            healthBar.TookDamage();
+        }
+        
+        if (playerHealth <= 0)
+        {
+            Die();
+        }
+    }
+    // Restart level and reset player functions
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene("StartingRoom");
+
+        retryLevelButton.SetActive(false);
+        mainMenuButton.SetActive(false);
+        deathText.SetActive(false);
+        grayOut.SetActive(false);
+        playerHealth = maxHealth;
+        healthBar.TookDamage();
+        
+        Instantiate(newPlayerObject, new Vector3(0, 0, 0), Quaternion.identity).name = "PlayerObj";
+        Destroy(gameObject);
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+        Destroy(gameObject);
+    }
+}
