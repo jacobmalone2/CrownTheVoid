@@ -9,7 +9,12 @@ public class FloatingHealthBar : MonoBehaviour
     [SerializeField] private Camera camera;
     [SerializeField] private Transform target;
     [SerializeField] private Vector3 offset;
-
+    // attempt 2
+    //private Camera _cam;
+    //void Start()
+    //{
+    //    _cam = Camera.main;
+    //}
 
     public void UpdateHealthBar(float currentValue, float maxValue)
     {
@@ -22,7 +27,11 @@ public class FloatingHealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // attempt 1
         //transform.rotation = camera.transform.rotation;
-       // transform.position = target.position + offset;
+        // transform.position = target.position + offset;
+        // attempt 2
+        //transform.rotation = Quaternion.LookRotation(transform.position - _cam.transform.position);
+
     }
 }
