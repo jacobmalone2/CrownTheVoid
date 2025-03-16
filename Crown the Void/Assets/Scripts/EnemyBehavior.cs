@@ -30,6 +30,8 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField]
     public int health = 10;
     [SerializeField]
+    FloatingHealthBar healthBar;
+    [SerializeField]
     private int walkSpeed = 2;
     [SerializeField]
     private int runSpeed = 4;
@@ -64,6 +66,10 @@ public class EnemyBehavior : MonoBehaviour
         StartCoroutine(StartGame(startDelay));
         playerCharacter = GameObject.FindWithTag("Player");
         cs = playerCharacter.GetComponent<PlayerController>();
+        healthBar = GetComponentInChildren<FloatingHealthBar>();
+        healthBar.UpdateHealthBar(health, 10);
+
+
     }
 
     IEnumerator StartGame(float startDelay)
@@ -198,6 +204,7 @@ public class EnemyBehavior : MonoBehaviour
         if (canTakeDamage)
         {
             health -= damage;
+            healthBar.UpdateHealthBar(health, 10);
             canTakeDamage = false;
             Invoke(nameof(TakeDamageCooldown), TAKE_DAMAGE_COOLDOWN);
             Debug.Log("You got me");
