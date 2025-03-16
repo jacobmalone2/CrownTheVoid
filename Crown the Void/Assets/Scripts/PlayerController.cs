@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     private const float ATTACK_DURATION = 0.8f;
     private const float DODGE_DURATION = 0.2f;
-    private const float DODGE_COOLDOWN = 0.5f;
+    private const float DODGE_COOLDOWN = 1f;
+    public float DODGE_CURRENT_COOLDOWN = 0f;
     private const float DODGE_SPEED_MULTIPLIER = 5f;
 
     private enum MoveAnim   // Enumeration type to define movement directions for animations
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private Camera m_Camera;
     private Animator m_Animator;
     private HealthBar healthBar;
+    private Dash dash;
 
     private Vector3 m_Movement;
     private MoveAnim m_moveAnim;
@@ -48,6 +50,8 @@ public class PlayerController : MonoBehaviour
     public GameObject retryLevelButton;
     public GameObject deathText;
     public GameObject grayOut;
+    public GameObject dashCooldown;
+
 
     
 
@@ -68,6 +72,7 @@ public class PlayerController : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         healthBar = GetComponentInChildren<HealthBar>();
         playerHealth = 100;
+        dash = GetComponentInChildren<Dash>();
     }
 
     //---------------------------------------------------
@@ -81,7 +86,7 @@ public class PlayerController : MonoBehaviour
             //-------------------
             //  Player ability
             //-------------------
-
+            
             CheckForAbility();
         }
     }
@@ -117,6 +122,7 @@ public class PlayerController : MonoBehaviour
     // Checks whether player input a combat ability this frame. If so, play combat
     // animation, use the ability, and block other actions, including movement and rotation.
     //----------------------------------------------------------------------------------------
+
     private void CheckForAbility()
     {
         // Sword swing attack
@@ -206,6 +212,8 @@ public class PlayerController : MonoBehaviour
             }
 
             m_isDodging = true;
+            DODGE_CURRENT_COOLDOWN = 0f;
+            dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
             m_isAbilityActive = true;
             StartCoroutine(DodgeDuration());
         }
@@ -221,7 +229,21 @@ public class PlayerController : MonoBehaviour
         m_isAbilityActive = false;
         m_canDodge = false;
         StartCoroutine(DodgeCooldown());
+        dashCooldown.SetActive(true);
+        InvokeRepeating(nameof(DodgeCooldownCounter), 0, 0.1f);
+
+
     }
+    private void DodgeCooldownCounter()
+    {
+        DODGE_CURRENT_COOLDOWN += 0.1f;
+        dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
+    }
+    public float GetDodgeCooldown()
+    {
+       return DODGE_CURRENT_COOLDOWN;
+    }
+
 
     //-----------------------------------
     // Cooldown for directional dodge
@@ -230,6 +252,9 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(DODGE_COOLDOWN);
         m_canDodge = true;
+        dashCooldown.SetActive(false);
+        CancelInvoke(nameof(DodgeCooldownCounter));
+
     }
 
     //---------------------------------------------------------------------------
