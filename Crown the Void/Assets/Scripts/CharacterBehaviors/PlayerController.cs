@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
     private const float ATTACK_DURATION = 0.7f;
     private const float BASH_DURATION = 0.4f;
     private const float DODGE_DURATION = 0.25f;
-    private const float DODGE_COOLDOWN = 0.5f;
+    private const float DODGE_COOLDOWN = 1f;
+    public float DODGE_CURRENT_COOLDOWN = 0f;
     private const float DODGE_SPEED_MULTIPLIER = 3f;
 
     private enum MoveAnim   // Enumeration type to define movement directions for animations
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private Animator m_Animator;
     private InventoryManager m_Inventory;
     private HealthBar healthBar;
+    private Dash dash;
 
     private Vector3 m_Movement;
     private MoveAnim m_moveAnim;
@@ -61,6 +63,7 @@ public class PlayerController : MonoBehaviour
     public GameObject retryLevelButton;
     public GameObject deathText;
     public GameObject grayOut;
+    public GameObject dashCooldown;
 
     
 
@@ -82,6 +85,7 @@ public class PlayerController : MonoBehaviour
         m_Inventory = GetComponent<InventoryManager>();
         healthBar = GetComponentInChildren<HealthBar>();
         playerHealth = maxHealth;
+        dash = GetComponentInChildren<Dash>();
     }
 
     //---------------------------------------------------
@@ -234,6 +238,8 @@ public class PlayerController : MonoBehaviour
             }
 
             m_isDodging = true;
+            DODGE_CURRENT_COOLDOWN = 0f;
+            dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
             m_takingAction = true;
             StartCoroutine(DodgeDuration());
         }
@@ -247,6 +253,20 @@ public class PlayerController : MonoBehaviour
         m_takingAction = false;
         m_canDodge = false;
         StartCoroutine(DodgeCooldown());
+        dashCooldown.SetActive(true);
+        InvokeRepeating(nameof(DodgeCooldownCounter), 0, 0.1f);
+
+
+    }
+    private void DodgeCooldownCounter()
+    {
+        DODGE_CURRENT_COOLDOWN += 0.1f;
+        dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
+    }
+
+    public float GetDodgeCooldown()
+    {
+       return DODGE_CURRENT_COOLDOWN;
     }
 
     // Cooldown for directional dodge
@@ -254,6 +274,9 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(DODGE_COOLDOWN);
         m_canDodge = true;
+        dashCooldown.SetActive(false);
+        CancelInvoke(nameof(DodgeCooldownCounter));
+
     }
 
     //---------------------------------------------------------------------------

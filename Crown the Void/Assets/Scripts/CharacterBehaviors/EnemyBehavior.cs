@@ -25,7 +25,9 @@ public class EnemyBehavior : MonoBehaviour
     [Header("Attack Settings")]
     [SerializeField] public int dmgPerHit = 10;
 
-    [SerializeField] public int health = 10;
+    [SerializeField] public int maxHealth = 10;
+    [NonSerialized] public int health = 10;
+    [SerializeField] FloatingHealthBar healthBar;
     [SerializeField] private int walkSpeed = 2;
     [SerializeField] private ParticleSystem deathVFX;
     
@@ -52,7 +54,8 @@ public class EnemyBehavior : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    { 
+        health = maxHealth;
         player = GameObject.Find("PlayerObj").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
@@ -61,6 +64,9 @@ public class EnemyBehavior : MonoBehaviour
 
         playerCharacter = GameObject.FindWithTag("Player");
         cs = playerCharacter.GetComponent<PlayerController>();
+
+        healthBar = GetComponentInChildren<FloatingHealthBar>();
+        healthBar.UpdateHealthBar(health, 10);
     }
 
     IEnumerator StartGame(float startDelay)
@@ -136,6 +142,7 @@ public class EnemyBehavior : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        healthBar.UpdateHealthBar(health, maxHealth);
 
         if (health <= 0)
         {

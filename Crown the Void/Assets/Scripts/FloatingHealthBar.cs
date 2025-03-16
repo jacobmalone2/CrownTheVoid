@@ -13,10 +13,6 @@ public class FloatingHealthBar : MonoBehaviour
     public void UpdateHealthBar(float currentValue, float maxValue)
     {
         slider.value = currentValue / maxValue;
-        if (currentValue <= 0)
-        {
-            Destroy(gameObject);
-        }
     }
 
     
