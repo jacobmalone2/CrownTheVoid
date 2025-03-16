@@ -7,8 +7,12 @@ using UnityEngine.UI;
 public class FloatingHealthBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
+    private Camera _mainCamera;
 
-    
+    private void Start()
+    {
+        _mainCamera = Camera.main;
+    }
 
     public void UpdateHealthBar(float currentValue, float maxValue)
     {
@@ -19,5 +23,9 @@ public class FloatingHealthBar : MonoBehaviour
         }
     }
 
-    
+    void LateUpdate()
+    {
+        // Set the rotation to face a fixed direction
+        transform.rotation = Quaternion.Euler(0, 0, 0); // Adjust the values as needed
+    }
 }

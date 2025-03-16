@@ -1127,7 +1127,7 @@ MonoBehaviour:
   timeBetweenAttacks: 0.5
   dmgPerHit: 10
   health: 10
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 7313197884599562943}
   walkSpeed: 2
   runSpeed: 4
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
@@ -2004,7 +2004,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2021,9 +2021,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 830591415793434592}
-  camera: {fileID: 0}
-  target: {fileID: 578754068964277319}
-  offset: {x: 0, y: 2.5, z: 0}
 --- !u!1 &5954104569905547327
 GameObject:
   m_ObjectHideFlags: 0
