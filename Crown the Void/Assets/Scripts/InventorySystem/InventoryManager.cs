@@ -10,7 +10,8 @@ public class InventoryManager : MonoBehaviour
     public enum ItemType        // Enumeration type to represent types of items
     {
         NullItem,
-        HealthPotion
+        HealthPotion,
+        FuryPotion
     }
 
     private List<InventoryItem> m_inventory;
@@ -52,6 +53,10 @@ public class InventoryManager : MonoBehaviour
             if (equippedItemData.id.Equals("HealthPotion"))
             {
                 return ItemType.HealthPotion;
+            }
+            else if (equippedItemData.id.Equals("FuryPotion"))
+            {
+                return ItemType.FuryPotion;
             }
 
             return ItemType.NullItem;

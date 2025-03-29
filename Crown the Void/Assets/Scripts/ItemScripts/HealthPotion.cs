@@ -12,16 +12,16 @@ public class HealthPotion : MonoBehaviour, IInteractable
 
     private InteractionPopUpBehavior m_popUp;
 
-    private void Start()
-    {
-        m_popUp = GetComponentInChildren<InteractionPopUpBehavior>();
-    }
-
     public string InteractionPrompt => m_interactionPrompt;
 
     public bool HasInteractedWith => m_hasInteractedWith;
 
     public int InteractPriority => m_interactPriority;
+
+    private void Start()
+    {
+        m_popUp = GetComponentInChildren<InteractionPopUpBehavior>();
+    }
 
     public bool Interact(Interactor interactor)
     {

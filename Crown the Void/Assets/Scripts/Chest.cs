@@ -36,7 +36,8 @@ public class Chest : MonoBehaviour, IInteractable
     // Drops currently held item after a second
     private void DropItem()
     {
-        Instantiate(itemDrop, transform.position + transform.forward * 0.25f, itemDrop.transform.rotation);
+        Instantiate(itemDrop, transform.position + transform.forward * 0.25f + transform.up * 0.25f,
+            itemDrop.transform.rotation);
     }
 
     public void ShowPopUp(string prompt)

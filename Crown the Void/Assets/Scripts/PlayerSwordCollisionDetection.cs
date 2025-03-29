@@ -15,7 +15,7 @@ public class PlayerSwordCollisionDetection : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy") && playerController.IsAttacking)
         {
             EnemyBehavior eb = other.gameObject.GetComponent<EnemyBehavior>();
-            eb.TakeDamage(5);
+            eb.TakeDamage(playerController.AttackDamage);
 
             // Get time remaining in attack animation and stop enemy from taking damage for remainder of attack
             float timeRemaining = ATTACK_ANIMATION_DURATION / ANIMATION_SPEED_MULTIPLIER -
