@@ -442,7 +442,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2149587544202327422}
   - component: {fileID: 4718144054190849250}
-  - component: {fileID: 3423122485808230845}
   m_Layer: 5
   m_Name: EnemyHealthBar
   m_TagString: Untagged
@@ -522,19 +521,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &3423122485808230845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1798672765509280430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slider: {fileID: 4718144054190849250}
 --- !u!1 &1912369189870480959
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1306,7 @@ GameObject:
   - component: {fileID: 1921149745637023914}
   - component: {fileID: 4451922276238983163}
   - component: {fileID: 3156186099593424223}
+  - component: {fileID: 3477236775852575607}
   m_Layer: 5
   m_Name: EnemyHB
   m_TagString: Untagged
@@ -1410,6 +1397,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3477236775852575607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4601161646762198316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 4718144054190849250}
 --- !u!1 &4625815498660063767
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,7 +2314,7 @@ MonoBehaviour:
     m_Bits: 64
   dmgPerHit: 15
   maxHealth: 20
-  healthBar: {fileID: 3423122485808230845}
+  healthBar: {fileID: 0}
   walkSpeed: 3
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
   startDelay: 5

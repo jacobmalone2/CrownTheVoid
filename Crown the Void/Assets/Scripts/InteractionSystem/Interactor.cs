@@ -38,12 +38,17 @@ public class Interactor : MonoBehaviour
                 interactable = m_interactableColliders[0].GetComponent<IInteractable>();
             }
 
-            // If interact button is pressed, interact with the object
-            if (interactable != null && Input.GetKeyDown(KeyCode.E) && 
-                !interactable.HasInteractedWith && !m_pc.TakingAction)
+            // Show interaction pop up
+            if (interactable != null && !interactable.HasInteractedWith)
             {
-                interactable.Interact(this);
-                m_pc.Interact();
+                interactable.ShowPopUp(interactable.InteractionPrompt);
+
+                // If interact button is pressed, interact with the object
+                if (Input.GetKeyDown(KeyCode.E) && !m_pc.TakingAction)
+                {
+                    interactable.Interact(this);
+                    m_pc.Interact();
+                }
             }
         }
     }

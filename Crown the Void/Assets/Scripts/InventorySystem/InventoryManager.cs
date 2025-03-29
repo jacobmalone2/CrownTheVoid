@@ -40,7 +40,6 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log(item.Data.id);
         }
-        Debug.Log(m_equippedItemIndex);
     }
 
     // Returns the type of item currently equipped
@@ -78,7 +77,6 @@ public class InventoryManager : MonoBehaviour
         {
             Debug.Log(item.Data.id);
         }
-        Debug.Log(m_equippedItemIndex);
     }
 
     // Swaps the currently equipped item by "interval" number of slots. Swaps forward if positive,
