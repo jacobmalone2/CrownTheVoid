@@ -64,8 +64,11 @@ public class PlayerController : MonoBehaviour
     public GameObject deathText;
     public GameObject grayOut;
     public GameObject dashCooldown;
+    public GameObject pauseMenu;
 
-    
+    public bool isPaused = false;
+
+
 
     //------------------------------
     // Persistant player data, yay!
@@ -86,6 +89,7 @@ public class PlayerController : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
         playerHealth = maxHealth;
         dash = GetComponentInChildren<Dash>();
+        pauseGame(isPaused = true);
     }
 
     //---------------------------------------------------
@@ -172,6 +176,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction)
         {
             UseItem();
+        }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            pauseGame(isPaused);
         }
     }
 
@@ -347,6 +355,25 @@ public class PlayerController : MonoBehaviour
                 HealthPotionEffect();
                 break;
         }
+    }
+    public void pauseGame(bool pause)
+    {
+        if (isPaused)
+        {
+            Time.timeScale = 1;
+            pauseMenu.SetActive(false);
+            isPaused = false;
+        }
+        else
+        {
+            Time.timeScale = 0;
+            pauseMenu.SetActive(true);
+            isPaused = true;
+        }
+    }
+    public void quitGame()
+    {
+        Application.Quit();
     }
 
     //-------------------------------------------------------------------------
