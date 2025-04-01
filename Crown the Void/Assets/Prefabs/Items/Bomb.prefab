@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8100398313120995505
+--- !u!1 &2422270639003448020
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3301913611239802351}
-  - component: {fileID: 5159476474063337814}
-  - component: {fileID: 7271589300864919614}
-  - component: {fileID: 6394297199736538148}
-  - component: {fileID: 2617556761097648015}
-  - component: {fileID: 6509442944946546999}
+  - component: {fileID: 2421650332905820775}
+  - component: {fileID: 8920945948843942572}
+  - component: {fileID: 4601841433668843024}
+  - component: {fileID: 1788460684031788727}
+  - component: {fileID: 5215345447440211414}
+  - component: {fileID: 5721091000289885259}
   m_Layer: 3
-  m_Name: HealthPotion
+  m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3301913611239802351
+--- !u!4 &2421650332905820775
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
+  m_GameObject: {fileID: 2422270639003448020}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.13052616, w: 0.9914449}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2274900539408899443}
+  - {fileID: 5153578562709545733}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 15}
---- !u!33 &5159476474063337814
+--- !u!33 &8920945948843942572
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
-  m_Mesh: {fileID: -5775594601901323010, guid: afeb3cb7d133eb846873248626352d8e, type: 3}
---- !u!23 &7271589300864919614
+  m_GameObject: {fileID: 2422270639003448020}
+  m_Mesh: {fileID: -4915369973818363243, guid: a0cd1702f4b0c144b9043f25e3365a55, type: 3}
+--- !u!23 &4601841433668843024
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
+  m_GameObject: {fileID: 2422270639003448020}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -9135639219464491421, guid: afeb3cb7d133eb846873248626352d8e, type: 3}
+  - {fileID: 7205189804858053933, guid: a0cd1702f4b0c144b9043f25e3365a55, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,42 +87,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6394297199736538148
-MonoBehaviour:
+--- !u!135 &1788460684031788727
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04c2aa4f86ca6384e9a9c6d234cdef24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bounceSpeed: 8
-  bounceAmplitude: 0.05
-  rotationSpeed: 90
-  startHeightOffset: 1
---- !u!114 &2617556761097648015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6892f43ed53c04441babf26d406d4625, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HealthPotionData: {fileID: 11400000, guid: 0ed2bcd0272e96c4d9145f0c861bc74a, type: 2}
---- !u!65 &6509442944946546999
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8100398313120995505}
+  m_GameObject: {fileID: 2422270639003448020}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -135,15 +106,44 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.47061092, y: 0.70912457, z: 0.5527547}
-  m_Center: {x: 0.008315533, y: -0.05776806, z: 0}
---- !u!1001 &3549967094092303592
+  m_Radius: 0.21154085
+  m_Center: {x: -0.0000010728836, y: 0.04019326, z: -0.0000025480986}
+--- !u!114 &5215345447440211414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422270639003448020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c2aa4f86ca6384e9a9c6d234cdef24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceSpeed: 8
+  bounceAmplitude: 0.05
+  rotationSpeed: 90
+  startHeightOffset: 1
+--- !u!114 &5721091000289885259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2422270639003448020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb80e8f45547a8642993af3cac5fbd29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BombData: {fileID: 11400000, guid: cc7d74c31b100534c9d3d5172c251c95, type: 2}
+--- !u!1001 &7589451416375374494
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3301913611239802351}
+    m_TransformParent: {fileID: 2421650332905820775}
     m_Modifications:
     - target: {fileID: 3374908883553046939, guid: fe0313b270ff5bd4cb07d444a0759a28, type: 3}
       propertyPath: m_Pivot.x
@@ -238,8 +238,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe0313b270ff5bd4cb07d444a0759a28, type: 3}
---- !u!224 &2274900539408899443 stripped
+--- !u!224 &5153578562709545733 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3374908883553046939, guid: fe0313b270ff5bd4cb07d444a0759a28, type: 3}
-  m_PrefabInstance: {fileID: 3549967094092303592}
+  m_PrefabInstance: {fileID: 7589451416375374494}
   m_PrefabAsset: {fileID: 0}

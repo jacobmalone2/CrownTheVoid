@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private const float TIME_TO_DRINK = 0.6f;
     private const float HEAL_FACTOR = 0.25f;
     private const int ATTACK_BOOST_MULT = 2;
+    private const int DAMAGE_DIVIDER = 2;
     private const float BUFF_DURATION = 15f;
     private const float ATTACK_DURATION = 0.7f;
     private const float BASH_DURATION = 0.4f;
@@ -53,6 +54,8 @@ public class PlayerController : MonoBehaviour
     private bool m_isBlocking = false;
     private bool m_takingAction = false;
     private bool m_isAlive = true;
+    private bool m_defenceUp = false;
+    private bool m_attackUp = false;
 
     public bool IsAttacking { get => m_isAttacking; }
     public bool IsBlocking { get => m_isBlocking; }
@@ -351,8 +354,22 @@ public class PlayerController : MonoBehaviour
                 HealthPotionEffect();
                 break;
             case InventoryManager.ItemType.FuryPotion:
+                if (!m_attackUp)
+                {
+                    m_Inventory.RemoveItem();
+                    FuryPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.SturdyPotion:
+                if (!m_defenceUp)
+                {
+                    m_Inventory.RemoveItem();
+                    SturdyPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.Bomb:
                 m_Inventory.RemoveItem();
-                FuryPotionEffect();
+                BombEffect();
                 break;
         }
     }
@@ -522,6 +539,8 @@ public class PlayerController : MonoBehaviour
     private void BoostDamage()
     {
         attackDamage *= ATTACK_BOOST_MULT;
+        m_attackUp = true;
+        
         Invoke(nameof(BoostDamageDuration), BUFF_DURATION);
         Debug.Log("Attack up");
     }
@@ -529,7 +548,37 @@ public class PlayerController : MonoBehaviour
     private void BoostDamageDuration()
     {
         attackDamage /= ATTACK_BOOST_MULT;
+        m_attackUp = false;
         Debug.Log("Attack back to normal");
+    }
+
+    //------------------------------------------------------------------
+    // Triggers the sturdy potion effect. Plays item use animation,
+    // then negates a portion of incoming damage.
+    //------------------------------------------------------------------
+    private void SturdyPotionEffect()
+    {
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        items[2].SetActive(true);
+
+        Invoke(nameof(BoostDefence), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(2));
+    }
+
+    private void BoostDefence()
+    {
+        m_defenceUp = true;
+        Invoke(nameof(BoostDefenceDuration), BUFF_DURATION);
+        Debug.Log("Defence up");
+    }
+
+    private void BoostDefenceDuration()
+    {
+        m_defenceUp = false;
+        Debug.Log("Defence back to normal");
     }
 
     private IEnumerator ItemUseDuration(int itemIndex)
@@ -538,6 +587,11 @@ public class PlayerController : MonoBehaviour
         swordObject.SetActive(true);
         items[itemIndex].SetActive(false);
         m_takingAction = false;
+    }
+
+    private void BombEffect()
+    {
+        Debug.Log("Throw a big bomb");
     }
 
     //-------------------------------------------------------------------------
@@ -568,6 +622,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!m_isDodging)
         {
+            if (m_defenceUp) hitPoints /= DAMAGE_DIVIDER;
+
             playerHealth -= hitPoints;
             healthBar.TookDamage();
         }
