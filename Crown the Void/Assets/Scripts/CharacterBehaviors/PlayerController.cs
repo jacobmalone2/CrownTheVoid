@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     private const float INTERACT_DURATION = 1.3f;
     private const float ITEM_USE_DURATION = 1.6f;
+    private const float ITEM_THROW_DURATION = 1.36f;
     private const float TIME_TO_DRINK = 0.6f;
     private const float HEAL_FACTOR = 0.25f;
     private const int ATTACK_BOOST_MULT = 2;
@@ -34,8 +35,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private int attackDamage = 5;
     [SerializeField] public int playerHealth;
+    [SerializeField] private float throwForce = 5f;
+    [SerializeField] private float throwUpwardForce = 2f;
     [SerializeField] private GameObject swordObject;
+    [SerializeField] private Transform throwPoint;
     [SerializeField] private List<GameObject> items;
+    [SerializeField] private GameObject activeBomb;
 
     private Camera m_Camera;
     private Animator m_Animator;
@@ -581,6 +586,33 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Defence back to normal");
     }
 
+    //------------------------------------------------------------------
+    // Triggers the bomb item effect. Starts the throw animation, and
+    // launches an active bomb projectile.
+    //------------------------------------------------------------------
+    private void BombEffect()
+    {
+        m_Animator.SetTrigger("ThrowItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        items[3].SetActive(true);
+
+        StartCoroutine(ItemThrowDuration());
+    }
+
+    public void ThrowItem()
+    {
+        // Instantiate an active bomb, then apply the throwing force to its rigidbody
+        GameObject bomb = Instantiate(activeBomb, throwPoint.position, Quaternion.identity);
+        Rigidbody bombRb = bomb.GetComponent<Rigidbody>();
+        Vector3 forceToAdd = transform.forward * throwForce + transform.up * throwUpwardForce;
+
+        bombRb.AddForce(forceToAdd, ForceMode.Impulse);
+
+        items[3].SetActive(false);
+    }
+
     private IEnumerator ItemUseDuration(int itemIndex)
     {
         yield return new WaitForSeconds(ITEM_USE_DURATION);
@@ -589,9 +621,11 @@ public class PlayerController : MonoBehaviour
         m_takingAction = false;
     }
 
-    private void BombEffect()
+    private IEnumerator ItemThrowDuration()
     {
-        Debug.Log("Throw a big bomb");
+        yield return new WaitForSeconds(ITEM_THROW_DURATION);
+        swordObject.SetActive(true);
+        m_takingAction = false;
     }
 
     //-------------------------------------------------------------------------
