@@ -13,7 +13,8 @@ public class InventoryManager : MonoBehaviour
         HealthPotion,
         FuryPotion,
         SturdyPotion,
-        Bomb
+        Bomb,
+        FireStormTome
     }
 
     private List<InventoryItem> m_inventory;
@@ -77,6 +78,10 @@ public class InventoryManager : MonoBehaviour
             else if (equippedItemData.id.Equals("Bomb"))
             {
                 return ItemType.Bomb;
+            }
+            else if (equippedItemData.id.Equals("FireStormTome"))
+            {
+                return ItemType.FireStormTome;
             }
 
             return ItemType.NullItem;

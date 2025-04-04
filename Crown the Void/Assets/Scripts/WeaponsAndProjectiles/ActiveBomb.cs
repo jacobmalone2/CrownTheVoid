@@ -19,15 +19,7 @@ public class ActiveBomb : MonoBehaviour
         Invoke(nameof(Explode), EXPLODE_TIMER);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            Explode();
-        }
-    }
-
-    private void Explode()
+    public void Explode()
     {
         if (hasExploded) return;
         

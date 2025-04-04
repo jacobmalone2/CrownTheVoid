@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private const float INTERACT_DURATION = 1.3f;
     private const float ITEM_USE_DURATION = 1.6f;
     private const float ITEM_THROW_DURATION = 1.36f;
+    private const float SPELL_CAST_DURATION = 4.2f;
     private const float TIME_TO_DRINK = 0.6f;
     private const float HEAL_FACTOR = 0.25f;
     private const int ATTACK_BOOST_MULT = 2;
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform throwPoint;
     [SerializeField] private List<GameObject> items;
     [SerializeField] private GameObject activeBomb;
+    [SerializeField] private GameObject fireStorm;
 
     private Camera m_Camera;
     private Animator m_Animator;
@@ -376,6 +378,10 @@ public class PlayerController : MonoBehaviour
                 m_Inventory.RemoveItem();
                 BombEffect();
                 break;
+            case InventoryManager.ItemType.FireStormTome:
+                m_Inventory.RemoveItem();
+                FireStormEffect();
+                break;
         }
     }
 
@@ -601,6 +607,19 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(ItemThrowDuration());
     }
 
+    private void FireStormEffect()
+    {
+        m_Animator.SetTrigger("CastSpell");
+        m_takingAction = true;
+
+        Instantiate(fireStorm, transform.position, Quaternion.identity);
+        m_defenceUp = true;
+        swordObject.SetActive(false);
+        items[4].SetActive(true);
+
+        StartCoroutine(SpellCastDuration(4));
+    }
+
     public void ThrowItem()
     {
         // Instantiate an active bomb, then apply the throwing force to its rigidbody
@@ -626,6 +645,15 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(ITEM_THROW_DURATION);
         swordObject.SetActive(true);
         m_takingAction = false;
+    }
+
+    private IEnumerator SpellCastDuration(int itemIndex)
+    {
+        yield return new WaitForSeconds(SPELL_CAST_DURATION);
+        swordObject.SetActive(true);
+        items[itemIndex].SetActive(false);
+        m_takingAction = false;
+        m_defenceUp = false;
     }
 
     //-------------------------------------------------------------------------
