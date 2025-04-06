@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
     public float DODGE_CURRENT_COOLDOWN = 0f;
-    private const float DODGE_SPEED_MULTIPLIER = 4f;
+    private const float DODGE_SPEED_MULTIPLIER = 3f;
 
     private enum MoveAnim   // Enumeration type to define movement directions for animations
     {
@@ -120,10 +120,25 @@ public class PlayerController : MonoBehaviour
             CheckForAbility();
         }
     }
-        void FixedUpdate()
+    void FixedUpdate()
     {
         if (m_isAlive)
         {
+            // If player is already dodging, continue to apply movement
+            if (m_isDodging)
+            {
+                if (m_Movement.magnitude == 0)
+                {
+                    transform.position = transform.position - transform.forward *
+                        Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+                }
+                else
+                {
+                    transform.position = transform.position + m_Movement *
+                        Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+                }
+            }
+
             // Only move and rotate if no ability is active
             if (!m_takingAction)
             {
@@ -167,7 +182,7 @@ public class PlayerController : MonoBehaviour
             Attack();
         }
         // Directional dodge
-        if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge) || m_isDodging)
+        if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge))
         {
             Dodge();
         }
@@ -224,47 +239,31 @@ public class PlayerController : MonoBehaviour
     //-------------------------------------------------------------------------
     private void Dodge()
     {
-        if (m_isDodging)    // If player is already dodging, continue to apply movement
+        // Apply dodge animation according to movement direction
+        switch (m_moveAnim)
         {
-            if (m_Movement.magnitude == 0)
-            {
-                transform.position = transform.position - transform.forward * 
-                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
-            }
-            else
-            {
-                transform.position = transform.position + m_Movement *
-                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
-            }
+            case MoveAnim.Idle:
+                m_Animator.SetTrigger("DodgeBackward");
+                break;
+            case MoveAnim.Forward:
+                m_Animator.SetTrigger("DodgeForward");
+                break;
+            case MoveAnim.Backward:
+                m_Animator.SetTrigger("DodgeBackward");
+                break;
+            case MoveAnim.Right:
+                m_Animator.SetTrigger("DodgeRight");
+                break;
+            case MoveAnim.Left:
+                m_Animator.SetTrigger("DodgeLeft");
+                break;
         }
-        else                // Otherwise, initiate the dodge
-        {
-            // Apply dodge animation according to movement direction
-            switch (m_moveAnim)
-            {
-                case MoveAnim.Idle:
-                    m_Animator.SetTrigger("DodgeBackward");
-                    break;
-                case MoveAnim.Forward:
-                    m_Animator.SetTrigger("DodgeForward");
-                    break;
-                case MoveAnim.Backward:
-                    m_Animator.SetTrigger("DodgeBackward");
-                    break;
-                case MoveAnim.Right:
-                    m_Animator.SetTrigger("DodgeRight");
-                    break;
-                case MoveAnim.Left:
-                    m_Animator.SetTrigger("DodgeLeft");
-                    break;
-            }
 
-            m_isDodging = true;
-            DODGE_CURRENT_COOLDOWN = 0f;
-            dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
-            m_takingAction = true;
-            StartCoroutine(DodgeDuration());
-        }
+        m_isDodging = true;
+        DODGE_CURRENT_COOLDOWN = 0f;
+        dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
+        m_takingAction = true;
+        StartCoroutine(DodgeDuration());
     }
 
     // Continues dodge for its duration

@@ -2461,6 +2461,8 @@ MonoBehaviour:
   deathText: {fileID: 6391950986677557894}
   grayOut: {fileID: 580940246391576184}
   dashCooldown: {fileID: 2793595676513199531}
+  pauseMenu: {fileID: 0}
+  isPaused: 0
 --- !u!95 &5565198935035242299
 Animator:
   serializedVersion: 5
@@ -3334,8 +3336,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4305342083217464069}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4241554, y: -0, z: -0, w: 0.90558946}
-  m_LocalPosition: {x: 0, y: 12, z: -10}
+  m_LocalRotation: {x: 0.42415294, y: -0.00042661585, z: 0.00019981479, w: 0.9055905}
+  m_LocalPosition: {x: 19.836283, y: 12, z: -17.98158}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
