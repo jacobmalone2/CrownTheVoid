@@ -8,4 +8,5 @@ public interface IInteractable
     public string InteractionPrompt { get; }
     public bool HasInteractedWith { get; }
     public bool Interact(Interactor interactor);
+    public void ShowPopUp(string prompt);
 }

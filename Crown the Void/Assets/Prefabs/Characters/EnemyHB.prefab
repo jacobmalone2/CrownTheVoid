@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3623616133686023656}
   - component: {fileID: 1524617552270150329}
   - component: {fileID: 229092757123536925}
+  - component: {fileID: 8686688944219305838}
   m_Layer: 5
   m_Name: EnemyHB
   m_TagString: Untagged
@@ -84,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &229092757123536925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,6 +103,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8686688944219305838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673786606040232046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 7609631104015174048}
 --- !u!1 &3465180673674156012
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,7 +126,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3833757715821527100}
   - component: {fileID: 7609631104015174048}
-  - component: {fileID: 531917254476711167}
   m_Layer: 5
   m_Name: EnemyHealthBar
   m_TagString: Untagged
@@ -192,19 +205,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &531917254476711167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465180673674156012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slider: {fileID: 7609631104015174048}
 --- !u!1 &5040959174278360565
 GameObject:
   m_ObjectHideFlags: 0

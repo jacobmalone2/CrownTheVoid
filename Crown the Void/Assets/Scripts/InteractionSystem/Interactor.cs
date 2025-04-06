@@ -10,7 +10,6 @@ public class Interactor : MonoBehaviour
     [SerializeField] private int m_numFound;
 
     private readonly Collider[] m_interactableColliders = new Collider[3];
-    private List<IInteractable> m_interactables = new List<IInteractable>();
     private PlayerController m_pc;
 
     private void Start()
@@ -38,12 +37,17 @@ public class Interactor : MonoBehaviour
                 interactable = m_interactableColliders[0].GetComponent<IInteractable>();
             }
 
-            // If interact button is pressed, interact with the object
-            if (interactable != null && Input.GetKeyDown(KeyCode.E) && 
-                !interactable.HasInteractedWith && !m_pc.TakingAction)
+            // Show interaction pop up
+            if (interactable != null && !interactable.HasInteractedWith)
             {
-                interactable.Interact(this);
-                m_pc.Interact();
+                interactable.ShowPopUp(interactable.InteractionPrompt);
+
+                // If interact button is pressed, interact with the object
+                if (Input.GetKeyDown(KeyCode.E) && !m_pc.TakingAction)
+                {
+                    interactable.Interact(this);
+                    m_pc.Interact();
+                }
             }
         }
     }
@@ -52,14 +56,15 @@ public class Interactor : MonoBehaviour
     // Return the highest priority object which hasn't been interacted with yet.
     private IInteractable FindInteractable()
     {
+        List<IInteractable> interactables = new List<IInteractable>();
         for (int i = 0; i < m_numFound; i++)
         {
-            m_interactables.Add(m_interactableColliders[i].GetComponent<IInteractable>());
+            interactables.Add(m_interactableColliders[i].GetComponent<IInteractable>());
         }
         
-        m_interactables.Sort(new PriorityComparer());
+        interactables.Sort(new PriorityComparer());
 
-        foreach (IInteractable i in m_interactables)
+        foreach (IInteractable i in interactables)
         {
             if (!i.HasInteractedWith)
             {

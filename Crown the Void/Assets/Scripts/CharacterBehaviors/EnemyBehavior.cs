@@ -141,22 +141,37 @@ public class EnemyBehavior : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        healthBar.UpdateHealthBar(health, maxHealth);
-
-        if (health <= 0)
+        if (canTakeDamage)
         {
-            isAlive = false;
+            health -= damage;
+            healthBar.UpdateHealthBar(health, maxHealth);
 
-            var deathEffect = Instantiate(deathVFX, transform.position, Quaternion.identity);
-            deathEffect.transform.parent = gameObject.transform;
-            deathVFX.Play();
+            if (health <= 0)
+            {
+                isAlive = false;
 
-            ResetAnimator();
-            enemyAnimator.SetBool("isDying", true);
+                var deathEffect = Instantiate(deathVFX, transform.position, Quaternion.identity);
+                deathEffect.transform.parent = gameObject.transform;
+                deathVFX.Play();
 
-            Invoke(nameof(DestroyEnemy), 2.5f);
+                ResetAnimator();
+                enemyAnimator.SetBool("isDying", true);
+
+                Invoke(nameof(DestroyEnemy), 2.5f);
+            }
         }
+    }
+
+    // Spawns a timer that prevents the enemy from taking damage
+    public void StopDamageForTime(float time)
+    {
+        canTakeDamage = false;
+        Invoke(nameof(TakeDamageTimer), time);
+    }
+
+    private void TakeDamageTimer()
+    {
+        canTakeDamage = true;
     }
 
     public void Stun()
