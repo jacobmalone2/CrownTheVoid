@@ -363,6 +363,7 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1;
             pauseMenu.SetActive(false);
             isPaused = false;
+
         }
         else
         {
