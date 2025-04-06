@@ -29,23 +29,26 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
-        {
             isTouching = true;
-        }
+    }
 
-        if (other.gameObject.CompareTag("Shield") && pc.IsBlocking)
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Shield"))
         {
-            canHitPlayer = false;
+            if (pc.IsBlocking)
+                canHitPlayer = false;
+            else if (!pc.IsBlocking)
+                canHitPlayer = true;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        isTouching = false;
+        if (other.gameObject.CompareTag("Player"))
+            isTouching = false;
 
         if (other.gameObject.CompareTag("Shield"))
-        {
             canHitPlayer = true;
-        }
     }
 }
