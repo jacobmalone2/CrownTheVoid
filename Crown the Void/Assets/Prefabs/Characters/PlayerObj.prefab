@@ -2445,7 +2445,7 @@ MonoBehaviour:
   attackDamage: 5
   playerHealth: 100
   throwForce: 5
-  throwUpwardForce: 5
+  throwUpwardForce: 2
   swordObject: {fileID: 4157586172002424305}
   throwPoint: {fileID: 9062088362928262976}
   items:

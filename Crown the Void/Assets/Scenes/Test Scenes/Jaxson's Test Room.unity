@@ -1315,14 +1315,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerObj
       objectReference: {fileID: 0}
-    - target: {fileID: 5900043847187923881, guid: 91c87173003e338489e13526ec309ae0, type: 3}
-      propertyPath: throwForce
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5900043847187923881, guid: 91c87173003e338489e13526ec309ae0, type: 3}
-      propertyPath: throwUpwardForce
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6106029315672467574, guid: 91c87173003e338489e13526ec309ae0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
