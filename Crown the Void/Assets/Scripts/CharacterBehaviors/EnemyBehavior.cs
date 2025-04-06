@@ -124,6 +124,7 @@ public class EnemyBehavior : MonoBehaviour
         if (distanceToWalkPoint.magnitude < 1f)
         {
             walkPointSet = false;
+            StopCoroutine(WalkPointTimeout());
         }
     }
 
@@ -133,11 +134,18 @@ public class EnemyBehavior : MonoBehaviour
         float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+        StartCoroutine(WalkPointTimeout());
 
         if(Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
         {
             walkPointSet = true;
         }
+    }
+
+    IEnumerator WalkPointTimeout()
+    {
+        yield return new WaitForSeconds(4f);
+        walkPointSet = false;
     }
 
     public void TakeDamage(int damage)
