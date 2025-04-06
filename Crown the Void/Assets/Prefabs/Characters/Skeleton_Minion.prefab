@@ -392,6 +392,7 @@ GameObject:
   - component: {fileID: 3799720693147592378}
   - component: {fileID: 1430594286207564267}
   - component: {fileID: 423088623002266447}
+  - component: {fileID: 8651070795609245221}
   m_Layer: 5
   m_Name: EnemyHB
   m_TagString: Untagged
@@ -482,6 +483,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8651070795609245221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281421938046796604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 8027716164269325042}
 --- !u!1 &1299439049008762723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,8 +1131,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   dmgPerHit: 10
-  health: 10
-  healthBar: {fileID: 113510929526028205}
+  maxHealth: 10
+  healthBar: {fileID: 0}
   walkSpeed: 2
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
   startDelay: 5
@@ -1166,8 +1180,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3621064861018179733}
   serializedVersion: 4
-  m_Mass: 10
-  m_Drag: 0
+  m_Mass: 20
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -1183,7 +1197,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!136 &8600207953520050073
 CapsuleCollider:
@@ -1249,7 +1263,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3730885046996644718}
   - component: {fileID: 8027716164269325042}
-  - component: {fileID: 113510929526028205}
   m_Layer: 5
   m_Name: EnemyHealthBar
   m_TagString: Untagged
@@ -1329,19 +1342,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &113510929526028205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3955340303880955070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe609088ec5814243afe9e47b719f275, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slider: {fileID: 8027716164269325042}
 --- !u!1 &4062878768840189712
 GameObject:
   m_ObjectHideFlags: 0

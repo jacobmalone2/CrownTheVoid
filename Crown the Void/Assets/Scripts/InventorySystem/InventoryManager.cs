@@ -10,7 +10,11 @@ public class InventoryManager : MonoBehaviour
     public enum ItemType        // Enumeration type to represent types of items
     {
         NullItem,
-        HealthPotion
+        HealthPotion,
+        FuryPotion,
+        SturdyPotion,
+        Bomb,
+        FireStormTome
     }
 
     private List<InventoryItem> m_inventory;
@@ -20,6 +24,15 @@ public class InventoryManager : MonoBehaviour
     private void Awake()
     {
         m_inventory = new List<InventoryItem>();
+    }
+
+    // Check for item swap each frame
+    private void Update()
+    {
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            SwapForward();
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            SwapBackward();
     }
 
     // If inventory isn't full, adds the item corresponding to itemData to the inventory list.
@@ -38,9 +51,9 @@ public class InventoryManager : MonoBehaviour
         }
         foreach (InventoryItem item in m_inventory)
         {
-            Debug.Log(item.Data.id);
+            Debug.Log(item.Data.id + " Slot " + m_inventory.IndexOf(item));
         }
-        Debug.Log(m_equippedItemIndex);
+        Debug.Log("Equipped item index: " + m_equippedItemIndex);
     }
 
     // Returns the type of item currently equipped
@@ -53,6 +66,22 @@ public class InventoryManager : MonoBehaviour
             if (equippedItemData.id.Equals("HealthPotion"))
             {
                 return ItemType.HealthPotion;
+            }
+            else if (equippedItemData.id.Equals("FuryPotion"))
+            {
+                return ItemType.FuryPotion;
+            }
+            else if (equippedItemData.id.Equals("SturdyPotion"))
+            {
+                return ItemType.SturdyPotion;
+            }
+            else if (equippedItemData.id.Equals("Bomb"))
+            {
+                return ItemType.Bomb;
+            }
+            else if (equippedItemData.id.Equals("FireStormTome"))
+            {
+                return ItemType.FireStormTome;
             }
 
             return ItemType.NullItem;
@@ -76,16 +105,31 @@ public class InventoryManager : MonoBehaviour
         }
         foreach (InventoryItem item in m_inventory)
         {
-            Debug.Log(item.Data.id);
+            Debug.Log(item.Data.id + " Slot " + m_inventory.IndexOf(item));
+        }
+        Debug.Log("Equipped item index: " + m_equippedItemIndex);
+    }
+
+    // Swaps the currently equipped item forward by one slot
+    private void SwapForward()
+    {
+        m_equippedItemIndex++;
+        if (m_equippedItemIndex >= m_maxItems)
+        {
+            m_equippedItemIndex = 0;
         }
         Debug.Log(m_equippedItemIndex);
     }
 
-    // Swaps the currently equipped item by "interval" number of slots. Swaps forward if positive,
-    // or backward if negative
-    public void SwapItem(int interval)
+    // Swaps the currently equipped item backward by one slot
+    private void SwapBackward()
     {
-
+        m_equippedItemIndex--;
+        if (m_equippedItemIndex < 0)
+        {
+            m_equippedItemIndex = m_maxItems - 1;
+        }
+        Debug.Log(m_equippedItemIndex);
     }
 
     // Drops the currently held item in front of the player and removes it from the inventory

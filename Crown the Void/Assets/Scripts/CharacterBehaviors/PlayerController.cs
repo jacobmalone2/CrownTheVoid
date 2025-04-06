@@ -8,8 +8,13 @@ public class PlayerController : MonoBehaviour
 {
     private const float INTERACT_DURATION = 1.3f;
     private const float ITEM_USE_DURATION = 1.6f;
-    private const float TIME_TO_HEAL = 0.6f;
-    private const float HEAL_FACTOR = 0.25f;    // Percentage of max health to heal by when using health potions
+    private const float ITEM_THROW_DURATION = 1.36f;
+    private const float SPELL_CAST_DURATION = 4.2f;
+    private const float TIME_TO_DRINK = 0.6f;
+    private const float HEAL_FACTOR = 0.25f;
+    private const int ATTACK_BOOST_MULT = 2;
+    private const int DAMAGE_DIVIDER = 2;
+    private const float BUFF_DURATION = 15f;
     private const float ATTACK_DURATION = 0.7f;
     private const float BASH_DURATION = 0.4f;
     private const float DODGE_DURATION = 0.25f;
@@ -29,9 +34,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
     [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int attackDamage = 5;
     [SerializeField] public int playerHealth;
+    [SerializeField] private float throwForce = 5f;
+    [SerializeField] private float throwUpwardForce = 2f;
     [SerializeField] private GameObject swordObject;
-    [SerializeField] private GameObject potionObject;
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private List<GameObject> items;
+    [SerializeField] private GameObject activeBomb;
+    [SerializeField] private GameObject fireStorm;
 
     private Camera m_Camera;
     private Animator m_Animator;
@@ -50,11 +61,14 @@ public class PlayerController : MonoBehaviour
     private bool m_isBlocking = false;
     private bool m_takingAction = false;
     private bool m_isAlive = true;
+    private bool m_defenceUp = false;
+    private bool m_attackUp = false;
 
     public bool IsAttacking { get => m_isAttacking; }
     public bool IsBlocking { get => m_isBlocking; }
     public bool IsBashing { get => m_isBashing; }
     public bool TakingAction { get => m_takingAction; }
+    public int AttackDamage { get => attackDamage; }
 
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
@@ -354,6 +368,28 @@ public class PlayerController : MonoBehaviour
                 m_Inventory.RemoveItem();
                 HealthPotionEffect();
                 break;
+            case InventoryManager.ItemType.FuryPotion:
+                if (!m_attackUp)
+                {
+                    m_Inventory.RemoveItem();
+                    FuryPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.SturdyPotion:
+                if (!m_defenceUp)
+                {
+                    m_Inventory.RemoveItem();
+                    SturdyPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.Bomb:
+                m_Inventory.RemoveItem();
+                BombEffect();
+                break;
+            case InventoryManager.ItemType.FireStormTome:
+                m_Inventory.RemoveItem();
+                FireStormEffect();
+                break;
         }
     }
     public void pauseGame(bool pause)
@@ -501,9 +537,8 @@ public class PlayerController : MonoBehaviour
     //-------------------------------------------------------------------------
 
     //------------------------------------------------------------------
-    // Triggers the item use animation, switches out the sword for the
-    // potion game object, and heals the player for a percentage of
-    // max health after a delay.
+    // Triggers the health potion effect. Plays item use animation,
+    // then heals player after a short delay.
     //------------------------------------------------------------------
     private void HealthPotionEffect()
     {
@@ -511,10 +546,10 @@ public class PlayerController : MonoBehaviour
         m_takingAction = true;
 
         swordObject.SetActive(false);
-        potionObject.SetActive(true);
+        items[0].SetActive(true);
 
-        Invoke(nameof(Heal), TIME_TO_HEAL);
-        Invoke(nameof(ItemUseDuration), ITEM_USE_DURATION);
+        Invoke(nameof(Heal), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(0));
     }
 
     private void Heal()
@@ -524,11 +559,129 @@ public class PlayerController : MonoBehaviour
         healthBar.TookDamage(); // Update health bar
     }
 
-    private void ItemUseDuration()
+    //------------------------------------------------------------------
+    // Triggers the fury potion effect. Plays item use animation,
+    // then boosts player attack damage for a duration.
+    //------------------------------------------------------------------
+    private void FuryPotionEffect()
     {
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        items[1].SetActive(true);
+
+        Invoke(nameof(BoostDamage), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(1));
+    }
+
+    private void BoostDamage()
+    {
+        attackDamage *= ATTACK_BOOST_MULT;
+        m_attackUp = true;
+        
+        Invoke(nameof(BoostDamageDuration), BUFF_DURATION);
+        Debug.Log("Attack up");
+    }
+
+    private void BoostDamageDuration()
+    {
+        attackDamage /= ATTACK_BOOST_MULT;
+        m_attackUp = false;
+        Debug.Log("Attack back to normal");
+    }
+
+    //------------------------------------------------------------------
+    // Triggers the sturdy potion effect. Plays item use animation,
+    // then negates a portion of incoming damage.
+    //------------------------------------------------------------------
+    private void SturdyPotionEffect()
+    {
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        items[2].SetActive(true);
+
+        Invoke(nameof(BoostDefence), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(2));
+    }
+
+    private void BoostDefence()
+    {
+        m_defenceUp = true;
+        Invoke(nameof(BoostDefenceDuration), BUFF_DURATION);
+        Debug.Log("Defence up");
+    }
+
+    private void BoostDefenceDuration()
+    {
+        m_defenceUp = false;
+        Debug.Log("Defence back to normal");
+    }
+
+    //------------------------------------------------------------------
+    // Triggers the bomb item effect. Starts the throw animation, and
+    // launches an active bomb projectile.
+    //------------------------------------------------------------------
+    private void BombEffect()
+    {
+        m_Animator.SetTrigger("ThrowItem");
+        m_takingAction = true;
+
+        swordObject.SetActive(false);
+        items[3].SetActive(true);
+
+        StartCoroutine(ItemThrowDuration());
+    }
+
+    private void FireStormEffect()
+    {
+        m_Animator.SetTrigger("CastSpell");
+        m_takingAction = true;
+
+        Instantiate(fireStorm, transform.position, Quaternion.identity);
+        m_defenceUp = true;
+        swordObject.SetActive(false);
+        items[4].SetActive(true);
+
+        StartCoroutine(SpellCastDuration(4));
+    }
+
+    public void ThrowItem()
+    {
+        // Instantiate an active bomb, then apply the throwing force to its rigidbody
+        GameObject bomb = Instantiate(activeBomb, throwPoint.position, Quaternion.identity);
+        Rigidbody bombRb = bomb.GetComponent<Rigidbody>();
+        Vector3 forceToAdd = transform.forward * throwForce + transform.up * throwUpwardForce;
+
+        bombRb.AddForce(forceToAdd, ForceMode.Impulse);
+
+        items[3].SetActive(false);
+    }
+
+    private IEnumerator ItemUseDuration(int itemIndex)
+    {
+        yield return new WaitForSeconds(ITEM_USE_DURATION);
         swordObject.SetActive(true);
-        potionObject.SetActive(false);
+        items[itemIndex].SetActive(false);
         m_takingAction = false;
+    }
+
+    private IEnumerator ItemThrowDuration()
+    {
+        yield return new WaitForSeconds(ITEM_THROW_DURATION);
+        swordObject.SetActive(true);
+        m_takingAction = false;
+    }
+
+    private IEnumerator SpellCastDuration(int itemIndex)
+    {
+        yield return new WaitForSeconds(SPELL_CAST_DURATION);
+        swordObject.SetActive(true);
+        items[itemIndex].SetActive(false);
+        m_takingAction = false;
+        m_defenceUp = false;
     }
 
     //-------------------------------------------------------------------------
@@ -559,6 +712,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!m_isDodging)
         {
+            if (m_defenceUp) hitPoints /= DAMAGE_DIVIDER;
+
             playerHealth -= hitPoints;
             healthBar.TookDamage();
         }
