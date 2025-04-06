@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class EnemyBehavior : MonoBehaviour
+public class BossBehavior : MonoBehaviour
 {
     private const float CAN_DAMAGE_AFTER_SHIELD_HIT = 1f;
     private const float TAKE_DAMAGE_COOLDOWN = 1.0f;
