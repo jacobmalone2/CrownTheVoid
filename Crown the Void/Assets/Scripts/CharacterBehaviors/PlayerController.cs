@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour
     private const int ATTACK_BOOST_MULT = 2;
     private const int DAMAGE_DIVIDER = 2;
     private const float BUFF_DURATION = 15f;
-    private const float ATTACK_DURATION = 0.7f;
-    private const float BASH_DURATION = 0.4f;
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
     public float DODGE_CURRENT_COOLDOWN = 0f;
@@ -34,11 +32,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
     [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int attackDamage = 5;
     [SerializeField] public int playerHealth;
+    [SerializeField] private int attackDamage = 5;
     [SerializeField] private float throwForce = 5f;
     [SerializeField] private float throwUpwardForce = 2f;
-    [SerializeField] private GameObject swordObject;
+    [SerializeField] private GameObject primaryWeapon;
     [SerializeField] private Transform throwPoint;
     [SerializeField] private List<GameObject> items;
     [SerializeField] private GameObject activeBomb;
@@ -54,21 +52,17 @@ public class PlayerController : MonoBehaviour
     private MoveAnim m_moveAnim;
 
     private float m_camDistanceToPlayer = 15.5f;
-    private bool m_isAttacking = false;
+    
     private bool m_isDodging = false;
-    private bool m_isBashing = false;
     private bool m_canDodge = true;
-    private bool m_isBlocking = false;
     private bool m_takingAction = false;
     private bool m_isAlive = true;
     private bool m_defenceUp = false;
     private bool m_attackUp = false;
-
-    public bool IsAttacking { get => m_isAttacking; }
-    public bool IsBlocking { get => m_isBlocking; }
-    public bool IsBashing { get => m_isBashing; }
-    public bool TakingAction { get => m_takingAction; }
+    
+    public bool TakingAction { get => m_takingAction; set => m_takingAction = value; }
     public int AttackDamage { get => attackDamage; }
+    public bool IsAlive { get => m_isAlive; }
 
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
@@ -103,7 +97,7 @@ public class PlayerController : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
         playerHealth = maxHealth;
         dash = GetComponentInChildren<Dash>();
-        pauseGame(isPaused = true);
+        PauseGame(isPaused = true);
     }
 
     //---------------------------------------------------
@@ -113,11 +107,9 @@ public class PlayerController : MonoBehaviour
     {
         if (m_isAlive)
         {
-            //-------------------
-            //  Player ability
-            //-------------------
+            // Check for universal action each frame
 
-            CheckForAbility();
+            CheckForAction();
         }
     }
     void FixedUpdate()
@@ -165,71 +157,32 @@ public class PlayerController : MonoBehaviour
 
     //-------------------------------------------------------------------------
     //*************************************************************************
-    //                             ABILITY METHODS
+    //                             ACTION METHODS
     //*************************************************************************
     //-------------------------------------------------------------------------
 
 
     //----------------------------------------------------------------------------------------
-    // Checks whether player input a combat ability this frame. If so, play combat
-    // animation, use the ability, and block other actions, including movement and rotation.
+    // Checks whether player input an action this frame. If so, calls a method to handle
+    // the action.
     //----------------------------------------------------------------------------------------
-    private void CheckForAbility()
+    private void CheckForAction()
     {
-        // Sword swing attack
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && !m_takingAction)
-        {
-            Attack();
-        }
         // Directional dodge
         if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge))
         {
             Dodge();
-        }
-        // Start Block
-        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !m_isDodging)
-        {
-            StartBlock();
-        }
-        // Shield Bash
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isBlocking)
-        {
-            ShieldBash();
-        }
-        // End Block
-        if (Input.GetMouseButtonUp((int)MouseButton.Right) && m_isBlocking)
-        {
-            EndBlock();
         }
         // Use Item
         if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction)
         {
             UseItem();
         }
-        if(Input.GetKeyDown(KeyCode.Escape))
+        // Pause game
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pauseGame(isPaused);
+            PauseGame(isPaused);
         }
-    }
-
-    //-------------------------------------------------------------------------
-    // Triggers the attack animation, set the attack and ability flags, and
-    // initiate attack cooldown
-    //-------------------------------------------------------------------------
-    private void Attack()
-    {
-        m_Animator.SetTrigger("Attack");
-        m_isAttacking = true;
-        m_takingAction = true;
-        StartCoroutine(AttackCooldown());
-    }
-
-    // Cooldown for sword swing attack
-    private IEnumerator AttackCooldown()
-    {
-        yield return new WaitForSeconds(ATTACK_DURATION);
-        m_isAttacking = false;
-        if (!m_isBlocking) m_takingAction = false;
     }
 
     //-------------------------------------------------------------------------
@@ -300,41 +253,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    //---------------------------------------------------------------------------
-    // Triggers the raise shield animation and sets flags for starting to block
-    //---------------------------------------------------------------------------
-    private void StartBlock()
-    {
-        m_Animator.SetBool("IsBlocking", true);
-        m_takingAction = true;
-        m_isBlocking = true;
-    }
-
-    //------------------------------------------------------------------------------
-    // Triggers the bash animation and sets the shield bash flag for bash duration
-    //------------------------------------------------------------------------------
-    private void ShieldBash()
-    {
-        m_Animator.SetTrigger("Bash");
-        m_isBashing = true;
-        Invoke(nameof(ShieldBashReset), BASH_DURATION);
-    }
-
-    private void ShieldBashReset()
-    {
-        m_isBashing = false;
-    }
-
-    //----------------------------------------------------------------
-    // Ends the block animation and clears the flags for blocking
-    //----------------------------------------------------------------
-    private void EndBlock()
-    {
-        m_Animator.SetBool("IsBlocking", false);
-        m_takingAction = false;
-        m_isBlocking = false;
-    }
-
     //-----------------------------------------------------------
     // Called by the Interactor when interacting with an object.
     // Plays the interact animation and stops movement.
@@ -391,7 +309,11 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    public void pauseGame(bool pause)
+
+    //---------------------------------------------
+    // Pauses the game and reveals the pause menu
+    //---------------------------------------------
+    public void PauseGame(bool pause)
     {
         if (isPaused)
         {
@@ -407,7 +329,7 @@ public class PlayerController : MonoBehaviour
             isPaused = true;
         }
     }
-    public void quitGame()
+    public void QuitGame()
     {
         Application.Quit();
     }
@@ -544,7 +466,7 @@ public class PlayerController : MonoBehaviour
         m_Animator.SetTrigger("UseItem");
         m_takingAction = true;
 
-        swordObject.SetActive(false);
+        primaryWeapon.SetActive(false);
         items[0].SetActive(true);
 
         Invoke(nameof(Heal), TIME_TO_DRINK);
@@ -567,7 +489,7 @@ public class PlayerController : MonoBehaviour
         m_Animator.SetTrigger("UseItem");
         m_takingAction = true;
 
-        swordObject.SetActive(false);
+        primaryWeapon.SetActive(false);
         items[1].SetActive(true);
 
         Invoke(nameof(BoostDamage), TIME_TO_DRINK);
@@ -599,7 +521,7 @@ public class PlayerController : MonoBehaviour
         m_Animator.SetTrigger("UseItem");
         m_takingAction = true;
 
-        swordObject.SetActive(false);
+        primaryWeapon.SetActive(false);
         items[2].SetActive(true);
 
         Invoke(nameof(BoostDefence), TIME_TO_DRINK);
@@ -628,7 +550,7 @@ public class PlayerController : MonoBehaviour
         m_Animator.SetTrigger("ThrowItem");
         m_takingAction = true;
 
-        swordObject.SetActive(false);
+        primaryWeapon.SetActive(false);
         items[3].SetActive(true);
 
         StartCoroutine(ItemThrowDuration());
@@ -641,7 +563,7 @@ public class PlayerController : MonoBehaviour
 
         Instantiate(fireStorm, transform.position, Quaternion.identity);
         m_defenceUp = true;
-        swordObject.SetActive(false);
+        primaryWeapon.SetActive(false);
         items[4].SetActive(true);
 
         StartCoroutine(SpellCastDuration(4));
@@ -662,7 +584,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ItemUseDuration(int itemIndex)
     {
         yield return new WaitForSeconds(ITEM_USE_DURATION);
-        swordObject.SetActive(true);
+        primaryWeapon.SetActive(true);
         items[itemIndex].SetActive(false);
         m_takingAction = false;
     }
@@ -670,14 +592,14 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ItemThrowDuration()
     {
         yield return new WaitForSeconds(ITEM_THROW_DURATION);
-        swordObject.SetActive(true);
+        primaryWeapon.SetActive(true);
         m_takingAction = false;
     }
 
     private IEnumerator SpellCastDuration(int itemIndex)
     {
         yield return new WaitForSeconds(SPELL_CAST_DURATION);
-        swordObject.SetActive(true);
+        primaryWeapon.SetActive(true);
         items[itemIndex].SetActive(false);
         m_takingAction = false;
         m_defenceUp = false;

@@ -12,10 +12,12 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     private bool isTouching = false;
 
     private PlayerController pc;
+    private KnightBehavior kb;
 
     private void Start()
     {
         pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        kb = GameObject.FindWithTag("Player").GetComponent<KnightBehavior>();
     }
 
     public void CheckDealDamage()
@@ -36,9 +38,9 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Shield"))
         {
-            if (pc.IsBlocking)
+            if (kb.IsBlocking)
                 canHitPlayer = false;
-            else if (!pc.IsBlocking)
+            else if (!kb.IsBlocking)
                 canHitPlayer = true;
         }
     }

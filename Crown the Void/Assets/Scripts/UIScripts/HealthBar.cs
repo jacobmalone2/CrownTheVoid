@@ -14,14 +14,13 @@ public class HealthBar : MonoBehaviour
 
     void Start()
     {
-        pc = GameObject.Find("PlayerObj").GetComponent<PlayerController>();
+        pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         playerHealth = pc.playerHealth;
         TookDamage();
     }
 
     public void TookDamage()
     {
-        pc = GameObject.Find("PlayerObj").GetComponent<PlayerController>();
         playerHealth = pc.playerHealth;
         
         healthBar.value = playerHealth;

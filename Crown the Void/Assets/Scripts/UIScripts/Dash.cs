@@ -12,7 +12,7 @@ public class Dash : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pc = GameObject.Find("PlayerObj").GetComponent<PlayerController>();
+        pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         dashcooldown = pc.DODGE_CURRENT_COOLDOWN;
         UpdateDashCooldown(dashcooldown);
 

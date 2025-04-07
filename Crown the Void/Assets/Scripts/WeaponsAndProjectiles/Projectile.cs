@@ -9,16 +9,18 @@ public class Projectile : MonoBehaviour
 
     private bool canHitPlayer = true;
 
+    private KnightBehavior kb;
     private PlayerController pc;
 
     private void Start()
     {
+        kb = GameObject.FindWithTag("Player").GetComponent<KnightBehavior>();
         pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Shield") && pc.IsBlocking)
+        if (other.gameObject.CompareTag("Shield") && kb.IsBlocking)
         {
             canHitPlayer = false;
         }

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayerShieldCollisionDetection : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerController;
+    [SerializeField] private KnightBehavior kb;
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") && playerController.IsBashing)
+        if (other.gameObject.CompareTag("Enemy") && kb.IsBashing)
         {
             other.gameObject.GetComponent<EnemyBehavior>().Stun();
         }

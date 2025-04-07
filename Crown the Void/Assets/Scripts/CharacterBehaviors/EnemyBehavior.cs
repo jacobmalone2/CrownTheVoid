@@ -56,7 +56,7 @@ public class EnemyBehavior : MonoBehaviour
     void Start()
     { 
         health = maxHealth;
-        player = GameObject.Find("PlayerObj").transform;
+        player = GameObject.FindWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
 
