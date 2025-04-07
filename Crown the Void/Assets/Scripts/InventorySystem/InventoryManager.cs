@@ -6,6 +6,7 @@ public class InventoryManager : MonoBehaviour
 {
     private int m_maxItems = 5;         // Max items inventory can hold
     private int m_equippedItemIndex = 0;    // The index position of the currently equipped item
+    public static InventoryManager current; 
 
     public enum ItemType        // Enumeration type to represent types of items
     {
@@ -21,9 +22,11 @@ public class InventoryManager : MonoBehaviour
 
     public List<InventoryItem> Inventory { get => m_inventory; }
 
+
     private void Awake()
     {
         m_inventory = new List<InventoryItem>();
+        current = this;
     }
 
     // Check for item swap each frame
@@ -137,9 +140,12 @@ public class InventoryManager : MonoBehaviour
     {
         GameObject droppedItem = m_inventory[m_equippedItemIndex].Data.prefab;
 
-        Instantiate(droppedItem, gameObject.transform.position + 
+        Instantiate(droppedItem, gameObject.transform.position +
             gameObject.transform.forward, droppedItem.transform.rotation);
 
         m_inventory.RemoveAt(m_equippedItemIndex);
     }
+    
+
 }
+
