@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: SturdyPotion
   displayName: Sturdy Potion
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: bfb4a37331bc14a469c68094360dc4ac, type: 3}
   prefab: {fileID: 4371133267229119537, guid: 000ea4537d2aefb4da8084a6fd0f21d4, type: 3}

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: FuryPotion
   displayName: Fury Potion
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d988d9bb70438764db5fdbc21835042b, type: 3}
   prefab: {fileID: 2124381702400104410, guid: d5183a6ad213b2f4f8ce08bd053be5e2, type: 3}
