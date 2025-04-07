@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1104240093202270033}
   - component: {fileID: 4832424131669059100}
   - component: {fileID: 1388303294529651652}
+  - component: {fileID: 6492122879863924650}
   m_Layer: 3
   m_Name: SturdyPotion
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -9135639219464491421, guid: af17fd89c749d98469ebc5d263f4af0a, type: 3}
+  - {fileID: 2100000, guid: 9698c8e490d322949b81722c3c29ae52, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -137,6 +138,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.40638572, y: 0.6006158, z: 0.4103651}
   m_Center: {x: 0.004174085, y: -0.086767435, z: 0.0033249855}
+--- !u!114 &6492122879863924650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4371133267229119537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ec0fb3ff2a5454e8863609a58514d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlowColor: {r: 0.8, g: 0.42352942, b: 0.96862745, a: 1}
+  LerpFactor: 10
 --- !u!1001 &1150261297688121784
 PrefabInstance:
   m_ObjectHideFlags: 0

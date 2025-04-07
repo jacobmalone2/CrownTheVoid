@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6394297199736538148}
   - component: {fileID: 2617556761097648015}
   - component: {fileID: 6509442944946546999}
+  - component: {fileID: 6083920066489265154}
   m_Layer: 3
   m_Name: HealthPotion
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -9135639219464491421, guid: afeb3cb7d133eb846873248626352d8e, type: 3}
+  - {fileID: 2100000, guid: 5e0a064334fa25647a9b40499d694f80, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -137,6 +138,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.47061092, y: 0.70912457, z: 0.5527547}
   m_Center: {x: 0.008315533, y: -0.05776806, z: 0}
+--- !u!114 &6083920066489265154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8100398313120995505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ec0fb3ff2a5454e8863609a58514d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlowColor: {r: 0.8, g: 0.42352942, b: 0.96862745, a: 1}
+  LerpFactor: 10
 --- !u!1001 &3549967094092303592
 PrefabInstance:
   m_ObjectHideFlags: 0

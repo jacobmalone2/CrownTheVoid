@@ -12,6 +12,7 @@ public class Chest : MonoBehaviour, IInteractable
 
     private Animator m_animator;
     private InteractionPopUpBehavior m_popUp;
+    private GlowObject m_Glow;
 
     public string InteractionPrompt => m_interactionPrompt;
     public bool HasInteractedWith => m_hasInteractedWith;
@@ -21,6 +22,7 @@ public class Chest : MonoBehaviour, IInteractable
     {
         m_animator = GetComponent<Animator>();
         m_popUp = GetComponentInChildren<InteractionPopUpBehavior>();
+        m_Glow = GetComponent<GlowObject>();
     }
 
     // Called when this object is interacted with. Plays open animation, signals
@@ -29,6 +31,7 @@ public class Chest : MonoBehaviour, IInteractable
     {
         m_animator.SetTrigger("Open");
         m_hasInteractedWith = true;
+        m_Glow.TurnOffGlow();
         Invoke(nameof(DropItem), 1f);
         return true;
     }

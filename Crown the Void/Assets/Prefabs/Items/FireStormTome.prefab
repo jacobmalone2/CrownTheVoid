@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8778557068642330925}
   - component: {fileID: 8118034025712137148}
   - component: {fileID: 2844900561465306882}
+  - component: {fileID: 1109072244179569756}
   m_Layer: 3
   m_Name: FireStormTome
   m_TagString: Untagged
@@ -65,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6565442159171177796, guid: d5c59f1127dc90a4f85cde9c1166bbaa, type: 3}
+  - {fileID: 2100000, guid: a137c3d59d4bf9b4c8633d08e261aece, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FSTData: {fileID: 11400000, guid: a91b6f20e992d3649aa4686aa0f35fef, type: 2}
+--- !u!114 &1109072244179569756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7636253811416159433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ec0fb3ff2a5454e8863609a58514d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlowColor: {r: 0.8, g: 0.42352942, b: 0.96862745, a: 1}
+  LerpFactor: 10
 --- !u!1001 &8626147739504903293
 PrefabInstance:
   m_ObjectHideFlags: 0

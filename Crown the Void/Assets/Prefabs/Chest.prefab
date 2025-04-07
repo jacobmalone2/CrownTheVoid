@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4496945082610453276}
   - component: {fileID: 6001571791827975636}
   - component: {fileID: 5348988784192286130}
+  - component: {fileID: 5360031565131914875}
   m_Layer: 3
   m_Name: Chest
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6892232844440235036, guid: 554cfd842fa2a744582aa2eec616862c, type: 3}
+  - {fileID: 2100000, guid: a674454689c75274a9871f04de3d3db1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -143,6 +144,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemDrop: {fileID: 0}
+--- !u!114 &5360031565131914875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1433197512135364061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ec0fb3ff2a5454e8863609a58514d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlowColor: {r: 0.8, g: 0.42352942, b: 0.96862745, a: 1}
+  LerpFactor: 10
 --- !u!1 &3718197938192958978
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +325,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6892232844440235036, guid: 554cfd842fa2a744582aa2eec616862c, type: 3}
+  - {fileID: 2100000, guid: a674454689c75274a9871f04de3d3db1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
