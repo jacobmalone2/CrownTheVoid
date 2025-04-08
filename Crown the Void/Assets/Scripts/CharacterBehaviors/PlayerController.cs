@@ -56,6 +56,8 @@ public class PlayerController : MonoBehaviour
     private bool m_isDodging = false;
     private bool m_canDodge = true;
     private bool m_takingAction = false;
+    private bool m_isAiming = false;
+    private bool m_isShooting = false;
     private bool m_isAlive = true;
     private bool m_defenceUp = false;
     private bool m_attackUp = false;
@@ -63,6 +65,8 @@ public class PlayerController : MonoBehaviour
     public bool TakingAction { get => m_takingAction; set => m_takingAction = value; }
     public int AttackDamage { get => attackDamage; }
     public bool IsAlive { get => m_isAlive; }
+    public bool IsAiming { get => m_isAiming; set => m_isAiming = value; }
+    public bool IsShooting { get => m_isShooting; set => m_isShooting = value; }
 
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
@@ -131,7 +135,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            // Only move and rotate if no ability is active
+            // Only move if no action is active
             if (!m_takingAction)
             {
                 //-------------------
@@ -140,12 +144,16 @@ public class PlayerController : MonoBehaviour
 
                 MovePlayer();
 
-                //-------------------
-                //  Player animation
-                //-------------------
+                //----------------------------
+                //  Player movement animation
+                //----------------------------
 
                 AnimatePlayer();
+            }
 
+            // Only rotate if no action is active or if player is aiming as the ranger
+            if (!m_takingAction || (m_isAiming && !m_isShooting))
+            {
                 //-------------------
                 //  Player Rotation
                 //-------------------

@@ -34,7 +34,6 @@ public class KnightBehavior : MonoBehaviour
         if (pc.IsAlive)
         {
             // Check for knight specific action each frame
-
             CheckForKnightAction();
         }
     }
