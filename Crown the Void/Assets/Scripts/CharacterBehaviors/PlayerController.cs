@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10.0f;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] public int playerHealth;
-    [SerializeField] private int attackDamage = 5;
+    [SerializeField] private int attackDamage = 10;
     [SerializeField] private float throwForce = 5f;
     [SerializeField] private float throwUpwardForce = 2f;
     [SerializeField] private GameObject primaryWeapon;
@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     private bool m_takingAction = false;
     private bool m_isAiming = false;
     private bool m_isShooting = false;
+    private bool m_isReloading = false;
     private bool m_isAlive = true;
     private bool m_defenceUp = false;
     private bool m_attackUp = false;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
     public bool IsAlive { get => m_isAlive; }
     public bool IsAiming { get => m_isAiming; set => m_isAiming = value; }
     public bool IsShooting { get => m_isShooting; set => m_isShooting = value; }
+    public bool IsReloading { get => m_isReloading; set => m_isReloading = value; }
 
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
@@ -152,7 +154,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // Only rotate if no action is active or if player is aiming as the ranger
-            if (!m_takingAction || (m_isAiming && !m_isShooting))
+            if (!m_takingAction || (m_isAiming && !m_isShooting && !m_isReloading))
             {
                 //-------------------
                 //  Player Rotation

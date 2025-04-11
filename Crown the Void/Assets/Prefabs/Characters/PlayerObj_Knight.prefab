@@ -2541,7 +2541,7 @@ MonoBehaviour:
   rotationSpeed: 10
   maxHealth: 100
   playerHealth: 100
-  attackDamage: 5
+  attackDamage: 10
   throwForce: 5
   throwUpwardForce: 2
   primaryWeapon: {fileID: 0}

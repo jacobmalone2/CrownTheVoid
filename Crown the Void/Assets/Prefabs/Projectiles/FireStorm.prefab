@@ -9678,7 +9678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 981b3d588734f18419a0096c88f2bc6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_burnDamage: 1
+  m_burnDamage: 2
   m_fireStormRadius: 5
   m_enemyMask:
     serializedVersion: 2

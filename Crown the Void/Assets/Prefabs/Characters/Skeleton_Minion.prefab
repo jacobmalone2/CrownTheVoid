@@ -1131,7 +1131,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   dmgPerHit: 10
-  maxHealth: 10
+  maxHealth: 20
   healthBar: {fileID: 0}
   walkSpeed: 2
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
@@ -1181,7 +1181,7 @@ Rigidbody:
   m_GameObject: {fileID: 3621064861018179733}
   serializedVersion: 4
   m_Mass: 20
-  m_Drag: 1
+  m_Drag: 1.5
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -2425,7 +2425,7 @@ GameObject:
   - component: {fileID: 2359347915491655399}
   m_Layer: 0
   m_Name: Skeleton_Blade
-  m_TagString: Untagged
+  m_TagString: Sword
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
