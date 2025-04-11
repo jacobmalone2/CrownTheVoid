@@ -302,8 +302,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699999807}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.60955137, y: -0.35350496, z: 0.3490897, w: 0.61775213}
-  m_LocalPosition: {x: -0.40653795, y: 1.7865894, z: -0.8615112}
+  m_LocalRotation: {x: 0.014889884, y: -0.9507344, z: 0.04751829, w: 0.30598116}
+  m_LocalPosition: {x: -0.1845074, y: 0.23974939, z: -0.450874}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -321,9 +321,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b234b8318961da047b83f5e6ea4db24d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefix: Crossbow_icon
+  prefix: Caltrop_icon
   pathFolder: Images
---- !u!1001 &817398487
+--- !u!1001 &2119705316
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -331,59 +331,59 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.4081459
+      value: -0.1433122
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.17123576
+      value: 0.008612799
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.3274646
+      value: -0.48587814
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 645849561015584975, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+    - target: {fileID: 7404899072922679105, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
       propertyPath: m_Name
-      value: crossbow_2handed
+      value: Caltrops
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 418a3f20faa6f3844920b6694054aa46, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 699999810}
   - {fileID: 581982931}
-  - {fileID: 817398487}
+  - {fileID: 2119705316}

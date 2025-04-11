@@ -8,18 +8,24 @@ public class RangerBehavior : MonoBehaviour
     private const float SHOOT_SECS = 0.77f;
     private const float RELOAD_SECS = 1.6f;
     private const float AIM_LINE_DISTANCE = 500f;
+    private const float CALTROP_COOLDOWN_TIME = 6f;
+    private const float CALTROP_COOLDOWN_TICK_TIME = 0.2f;
     private const int MAX_ARROWS = 3;
+    private const int MAX_CALTROPS = 3;
 
     [SerializeField] private float m_shootForce = 0.4f;
     [SerializeField] private int m_arrowCount = 3;
+    [SerializeField] private int m_caltropsInPouch = 3;
     [SerializeField] private Transform m_shootPoint;
     [SerializeField] private Transform m_aimStartPoint;
     [SerializeField] private GameObject m_projectile;
+    [SerializeField] private GameObject m_caltrop;
 
     private bool m_isAiming;
     private bool m_isShooting;
     private bool m_isReloading;
     private bool m_foundTarget;
+    private float m_caltropCooldownTime;
 
     private PlayerController pc;
     private Animator m_Animator;
@@ -28,6 +34,7 @@ public class RangerBehavior : MonoBehaviour
     private Vector3[] m_aimPoints;
     private Vector3 m_shootDirection;
     private LineRenderer m_aimLine;
+    private Queue<GameObject> m_droppedCaltrops;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +44,7 @@ public class RangerBehavior : MonoBehaviour
         m_aimLine = gameObject.GetComponent<LineRenderer>();
         m_arrowCountUI = gameObject.GetComponentInChildren<ArrowCountUI>();
         m_aimPoints = new Vector3[2];
+        m_droppedCaltrops = new Queue<GameObject>();
     }
 
     // Update is called once per frame
@@ -57,6 +65,11 @@ public class RangerBehavior : MonoBehaviour
 
     private void CheckForRangerAction()
     {
+        // Drop Caltrop
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_caltropsInPouch > 0 && !pc.TakingAction)
+        {
+            DropCaltrop();
+        }
         // Start Aiming
         if (Input.GetMouseButtonDown((int)MouseButton.Right) && !pc.TakingAction)
         {
@@ -68,7 +81,7 @@ public class RangerBehavior : MonoBehaviour
             ShootArrow();
         }
         // Reload Arrows
-        if (Input.GetKeyDown(KeyCode.R) && m_arrowCount == 0 && (!pc.TakingAction || m_isAiming && !m_isShooting))
+        if (Input.GetKeyDown(KeyCode.R) && m_arrowCount < MAX_ARROWS && (!pc.TakingAction || m_isAiming && !m_isShooting))
         {
             ReloadArrows();
         }
@@ -84,6 +97,43 @@ public class RangerBehavior : MonoBehaviour
     //                             ACTION METHODS
     //*************************************************************************
     //-------------------------------------------------------------------------
+
+    //----------------------------------------------------------------
+    // Drops a caltrop that stuns any enemy that walks over it.
+    //----------------------------------------------------------------
+    private void DropCaltrop()
+    {
+        m_droppedCaltrops.Enqueue(Instantiate(m_caltrop, transform.position, transform.rotation));
+
+        // If dropped caltrops are greater than the max, gets rid of the oldest one.
+        if (m_droppedCaltrops.Count > MAX_CALTROPS)
+        {
+            Destroy(m_droppedCaltrops.Dequeue());
+        }
+
+        // Start cooldown for caltrops if we're not already recharging
+        if (m_caltropsInPouch == MAX_CALTROPS)
+            InvokeRepeating(nameof(CaltropCooldownTick), 0f, CALTROP_COOLDOWN_TICK_TIME);
+
+        // Decrease number of caltrops left in pouch
+        m_caltropsInPouch--;
+    }
+
+    private void CaltropCooldownTick()
+    {
+        // Increment caltrop cooldown variable
+        m_caltropCooldownTime += CALTROP_COOLDOWN_TICK_TIME;
+
+        // Once time passed surpasses the cooldown time, recharge one caltrop use
+        if (m_caltropCooldownTime >= CALTROP_COOLDOWN_TIME)
+        {
+            m_caltropsInPouch++;
+            m_caltropCooldownTime = 0f;
+            // If we have max caltrops in pouch, stop the cooldown.
+            if (m_caltropsInPouch == MAX_CALTROPS)
+                CancelInvoke(nameof(CaltropCooldownTick));
+        }
+    }
 
     //----------------------------------------------------------------
     // Starts the aiming animation and sets the flags for aiming

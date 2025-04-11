@@ -6,6 +6,7 @@ public class PlayerSwordCollisionDetection : MonoBehaviour
 {
     private const float ATTACK_ANIMATION_DURATION = 1.067f;
     private const float ANIMATION_SPEED_MULTIPLIER = 1.5f;
+    private const int KNIGHT_ANIMATION_LAYER = 4;
 
     [SerializeField] private PlayerController pc;
     [SerializeField] private KnightBehavior kb;
@@ -20,7 +21,7 @@ public class PlayerSwordCollisionDetection : MonoBehaviour
 
             // Get time remaining in attack animation and stop enemy from taking damage for remainder of attack
             float timeRemaining = ATTACK_ANIMATION_DURATION / ANIMATION_SPEED_MULTIPLIER -
-                animator.GetCurrentAnimatorStateInfo(1).normalizedTime / ANIMATION_SPEED_MULTIPLIER;
+                animator.GetCurrentAnimatorStateInfo(KNIGHT_ANIMATION_LAYER).normalizedTime / ANIMATION_SPEED_MULTIPLIER;
 
             eb.StopDamageForTime(timeRemaining);
         }

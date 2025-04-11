@@ -191,6 +191,8 @@ public class EnemyBehavior : MonoBehaviour
             CanDealDamage = false;
             isStunned = true;
 
+            agent.speed = 0;
+
             Invoke(nameof(EndStun), STUN_DURATION);
         }
     }
@@ -199,6 +201,8 @@ public class EnemyBehavior : MonoBehaviour
     {
         CanDealDamage = true;
         isStunned = false;
+
+        agent.speed = walkSpeed;
     }
 
     public void ResetAnimator()
