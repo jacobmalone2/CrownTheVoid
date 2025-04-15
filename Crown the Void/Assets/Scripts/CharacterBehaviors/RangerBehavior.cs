@@ -8,8 +8,8 @@ public class RangerBehavior : MonoBehaviour
     private const float SHOOT_SECS = 0.77f;
     private const float RELOAD_SECS = 1.6f;
     private const float AIM_LINE_DISTANCE = 500f;
-    private const float CALTROP_COOLDOWN_TIME = 6f;
-    private const float CALTROP_COOLDOWN_TICK_TIME = 0.2f;
+    private const int CALTROP_COOLDOWN_TIME = 6;
+    private const int CALTROP_COOLDOWN_TICK_TIME = 1;
     private const int MAX_ARROWS = 3;
     private const int MAX_CALTROPS = 3;
 
@@ -25,11 +25,12 @@ public class RangerBehavior : MonoBehaviour
     private bool m_isShooting;
     private bool m_isReloading;
     private bool m_foundTarget;
-    private float m_caltropCooldownTime;
+    private int m_caltropCooldownTime;
 
     private PlayerController pc;
     private Animator m_Animator;
     private ArrowCountUI m_arrowCountUI;
+    private CaltropUI m_caltropUI;
     private RaycastHit m_target;
     private Vector3[] m_aimPoints;
     private Vector3 m_shootDirection;
@@ -43,8 +44,10 @@ public class RangerBehavior : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         m_aimLine = gameObject.GetComponent<LineRenderer>();
         m_arrowCountUI = gameObject.GetComponentInChildren<ArrowCountUI>();
+        m_caltropUI = gameObject.GetComponentInChildren<CaltropUI>();
         m_aimPoints = new Vector3[2];
         m_droppedCaltrops = new Queue<GameObject>();
+        m_caltropCooldownTime = CALTROP_COOLDOWN_TIME;
     }
 
     // Update is called once per frame
@@ -111,6 +114,8 @@ public class RangerBehavior : MonoBehaviour
             Destroy(m_droppedCaltrops.Dequeue());
         }
 
+        m_caltropUI.UseCaltrop();   // update UI
+
         // Start cooldown for caltrops if we're not already recharging
         if (m_caltropsInPouch == MAX_CALTROPS)
             InvokeRepeating(nameof(CaltropCooldownTick), 0f, CALTROP_COOLDOWN_TICK_TIME);
@@ -121,14 +126,16 @@ public class RangerBehavior : MonoBehaviour
 
     private void CaltropCooldownTick()
     {
-        // Increment caltrop cooldown variable
-        m_caltropCooldownTime += CALTROP_COOLDOWN_TICK_TIME;
+        // Tick down cooldown timer
+        m_caltropCooldownTime -= CALTROP_COOLDOWN_TICK_TIME;
+        m_caltropUI.SetCooldownTime(m_caltropCooldownTime);     // update UI
 
-        // Once time passed surpasses the cooldown time, recharge one caltrop use
-        if (m_caltropCooldownTime >= CALTROP_COOLDOWN_TIME)
+        // Once timer reaches 0, recharge one caltrop use
+        if (m_caltropCooldownTime == 0)
         {
             m_caltropsInPouch++;
-            m_caltropCooldownTime = 0f;
+            m_caltropUI.GainCaltrop();      // update UI
+            m_caltropCooldownTime = CALTROP_COOLDOWN_TIME;
             // If we have max caltrops in pouch, stop the cooldown.
             if (m_caltropsInPouch == MAX_CALTROPS)
                 CancelInvoke(nameof(CaltropCooldownTick));
