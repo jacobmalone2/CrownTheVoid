@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private const float HEAL_FACTOR = 0.25f;
     private const int ATTACK_BOOST_MULT = 2;
     private const int DAMAGE_DIVIDER = 2;
+    private const float BUFF_TIMER_TICK = 0.1f;
     private const float BUFF_DURATION = 15f;
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private Animator m_Animator;
     private InventoryManager m_Inventory;
     private HealthBar healthBar;
+    private StatusEffectIcons statusEffectIcons;
     private Dash dash;
 
     private Vector3 m_Movement;
@@ -62,6 +64,8 @@ public class PlayerController : MonoBehaviour
     private bool m_isAlive = true;
     private bool m_defenceUp = false;
     private bool m_attackUp = false;
+    private float m_boostDamageTimer = BUFF_DURATION;
+    private float m_boostDefenceTimer = BUFF_DURATION;
     
     public bool TakingAction { get => m_takingAction; set => m_takingAction = value; }
     public int AttackDamage { get => attackDamage; }
@@ -101,6 +105,7 @@ public class PlayerController : MonoBehaviour
         m_Animator = GetComponent<Animator>();
         m_Inventory = GetComponent<InventoryManager>();
         healthBar = GetComponentInChildren<HealthBar>();
+        statusEffectIcons = GetComponentInChildren<StatusEffectIcons>();
         playerHealth = maxHealth;
         dash = GetComponentInChildren<Dash>();
         PauseGame(isPaused = true);
@@ -510,16 +515,27 @@ public class PlayerController : MonoBehaviour
     {
         attackDamage *= ATTACK_BOOST_MULT;
         m_attackUp = true;
+        statusEffectIcons.ShowAttackUp();   // update UI
         
-        Invoke(nameof(BoostDamageDuration), BUFF_DURATION);
-        Debug.Log("Attack up");
+        InvokeRepeating(nameof(BoostDamageTimerTick), 0f, BUFF_TIMER_TICK);
     }
 
-    private void BoostDamageDuration()
+    private void BoostDamageTimerTick()
     {
-        attackDamage /= ATTACK_BOOST_MULT;
-        m_attackUp = false;
-        Debug.Log("Attack back to normal");
+        // Tick down timer and update UI
+        m_boostDamageTimer -= BUFF_TIMER_TICK;
+        statusEffectIcons.UpdateAttackUp(m_boostDamageTimer / BUFF_DURATION);
+
+        // When timer runs out, deactivate buff, update UI, and cancel timer and reset for next time
+        if (m_boostDamageTimer <= 0)
+        {
+            attackDamage /= ATTACK_BOOST_MULT;
+            m_attackUp = false;
+            m_boostDamageTimer = BUFF_DURATION;
+            statusEffectIcons.HideAttackUp();
+
+            CancelInvoke(nameof(BoostDamageTimerTick));
+        }
     }
 
     //------------------------------------------------------------------
@@ -541,14 +557,27 @@ public class PlayerController : MonoBehaviour
     private void BoostDefence()
     {
         m_defenceUp = true;
-        Invoke(nameof(BoostDefenceDuration), BUFF_DURATION);
-        Debug.Log("Defence up");
+        statusEffectIcons.ShowDefenceUp();  // update UI
+        InvokeRepeating(nameof(BoostDefenceTimerTick), 0f, BUFF_TIMER_TICK);
     }
 
-    private void BoostDefenceDuration()
+    private void BoostDefenceTimerTick()
     {
-        m_defenceUp = false;
-        Debug.Log("Defence back to normal");
+        // Tick down timer and update UI
+        m_boostDefenceTimer -= BUFF_TIMER_TICK;
+        statusEffectIcons.UpdateDefenceUp(m_boostDefenceTimer / BUFF_DURATION);
+
+        // When timer runs out, deactivate buff, update UI, and cancel timer and reset for next time
+        if (m_boostDefenceTimer <= 0)
+        {
+            m_defenceUp = false;
+            m_boostDefenceTimer = BUFF_DURATION;
+            statusEffectIcons.HideDefenceUp();
+
+            CancelInvoke(nameof(BoostDefenceTimerTick));
+        }
+
+        
     }
 
     //------------------------------------------------------------------
