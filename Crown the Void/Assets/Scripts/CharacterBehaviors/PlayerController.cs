@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip throwSound;
     [SerializeField] private AudioClip[] hurtSounds;
     [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip drinkSound;
 
     private Camera m_Camera;
     private Animator m_Animator;
@@ -506,6 +507,8 @@ public class PlayerController : MonoBehaviour
 
     private void Heal()
     {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
         playerHealth += (int)(HEAL_FACTOR * maxHealth);
         if (playerHealth > maxHealth) playerHealth = maxHealth;
         healthBar.TookDamage(); // Update health bar
@@ -529,6 +532,8 @@ public class PlayerController : MonoBehaviour
 
     private void BoostDamage()
     {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
         attackDamage *= ATTACK_BOOST_MULT;
         m_attackUp = true;
         statusEffectIcons.ShowAttackUp();   // update UI
@@ -572,6 +577,8 @@ public class PlayerController : MonoBehaviour
 
     private void BoostDefence()
     {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
         m_defenceUp = true;
         statusEffectIcons.ShowDefenceUp();  // update UI
         InvokeRepeating(nameof(BoostDefenceTimerTick), 0f, BUFF_TIMER_TICK);
@@ -695,16 +702,16 @@ public class PlayerController : MonoBehaviour
 
             playerHealth -= hitPoints;
             healthBar.TookDamage();
-        }
-        
-        if (playerHealth <= 0)
-        {
-            Die();
-        }
-        else
-        {
-            // Play hurt sound effect
-            m_AudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+
+            if (playerHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                // Play hurt sound effect
+                m_AudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+            }
         }
     }
     // Restart level and reset player functions

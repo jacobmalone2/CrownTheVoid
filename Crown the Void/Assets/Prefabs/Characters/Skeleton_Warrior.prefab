@@ -1166,7 +1166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyBehavior: {fileID: 326977793655994815}
   meleeBehavior: {fileID: 8650757185402871357}
-  blockSound: {fileID: 8300000, guid: 136f6319492def942948165da3728b5c, type: 3}
+  blockSound: {fileID: 8300000, guid: 12aedf85363fcf6468855300013fad4a, type: 3}
 --- !u!82 &3088767768593618120
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1179,7 +1179,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1187,7 +1187,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 5
+  MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

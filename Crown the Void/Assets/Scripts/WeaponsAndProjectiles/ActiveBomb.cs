@@ -10,13 +10,18 @@ public class ActiveBomb : MonoBehaviour
     [SerializeField] private float explosionForce = 500f;
     [SerializeField] private int explosionDamage = 10;
     [SerializeField] private GameObject explosionEffect;
+    [SerializeField] private GameObject m_bombModel;
+    [SerializeField] private AudioClip explosionSound;
 
     private bool hasExploded = false;
+
+    private AudioSource m_AudioSource;
 
     // Set a timer for bomb explosion
     private void Start()
     {
         Invoke(nameof(Explode), EXPLODE_TIMER);
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     public void Explode()
@@ -54,8 +59,12 @@ public class ActiveBomb : MonoBehaviour
             }
         }
 
+        m_AudioSource.PlayOneShot(explosionSound);  // Play explosion sound effect
+
+        m_bombModel.SetActive(false);       // Hide bomb model
+
         // Destroy bomb after short delay
-        Invoke(nameof(DestroyObject), 0.1f);
+        Invoke(nameof(DestroyObject), 2f);
     }
 
     private void DestroyObject()

@@ -3296,6 +3296,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0f0691b606769e246abafaaff1785f82, type: 3}
   - {fileID: 8300000, guid: 74d43cb13922fcb44b360fecb92730af, type: 3}
   deathSound: {fileID: 8300000, guid: 5a452180ac1529f4f8ba81deb1b8035a, type: 3}
+  drinkSound: {fileID: 8300000, guid: 6604d09cae192304b810c49db4530d6a, type: 3}
   newPlayerObject: {fileID: 3857685313149264909}
   mainMenuButton: {fileID: 3043422528377655984}
   retryLevelButton: {fileID: 967205718520946199}
@@ -3392,6 +3393,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 034b3b6fa4d53954dbc5755ed5b78c67, type: 3}
   - {fileID: 8300000, guid: 7314056de4f45f047808e6c8be0d50e4, type: 3}
   - {fileID: 8300000, guid: 537860a1e717fbf41ab13f2a2cde7566, type: 3}
+  bashSound: {fileID: 8300000, guid: b6eecfc79b1836144b84a898c64c944a, type: 3}
 --- !u!82 &8889656796227392189
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3412,7 +3414,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 10
+  MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -3653,7 +3655,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -3661,7 +3663,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 10
+  MinDistance: 1
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0

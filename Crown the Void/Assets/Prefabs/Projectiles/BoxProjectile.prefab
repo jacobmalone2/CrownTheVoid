@@ -148,3 +148,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyBehavior: {fileID: 7972124664473660019, guid: bffe72fbd5a2a734e8911a7803026530, type: 3}
   destroyProjectileOnHit: 0
+  hitPlayerSound: {fileID: 8300000, guid: 3effae8993da9ca42811f9c8796d5175, type: 3}
+  hitOtherSound: {fileID: 8300000, guid: 3effae8993da9ca42811f9c8796d5175, type: 3}

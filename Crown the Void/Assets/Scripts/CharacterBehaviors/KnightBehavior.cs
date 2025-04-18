@@ -10,6 +10,7 @@ public class KnightBehavior : MonoBehaviour
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip[] swingSounds;
+    [SerializeField] private AudioClip bashSound;
 
     private bool m_isAttacking = false;
     private bool m_isBashing = false;
@@ -111,6 +112,7 @@ public class KnightBehavior : MonoBehaviour
     private void ShieldBash()
     {
         m_Animator.SetTrigger("Bash");
+        m_AudioSource.PlayOneShot(bashSound);
         m_isBashing = true;
         Invoke(nameof(ShieldBashReset), BASH_DURATION);
     }
