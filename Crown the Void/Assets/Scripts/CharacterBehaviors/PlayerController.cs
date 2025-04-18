@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
         Right
     }
 
+    [Header("Player Stats")]
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
     [SerializeField] private int maxHealth = 100;
@@ -37,14 +38,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int attackDamage = 10;
     [SerializeField] private float throwForce = 5f;
     [SerializeField] private float throwUpwardForce = 2f;
+
+    [Header("Equipment References")]
     [SerializeField] private GameObject primaryWeapon;
     [SerializeField] private Transform throwPoint;
     [SerializeField] private List<GameObject> items;
+
+    [Header("Projectiles")]
     [SerializeField] private GameObject activeBomb;
     [SerializeField] private GameObject fireStorm;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip throwSound;
+    [SerializeField] private AudioClip[] hurtSounds;
+    [SerializeField] private AudioClip deathSound;
+
     private Camera m_Camera;
     private Animator m_Animator;
+    private AudioSource m_AudioSource;
     private InventoryManager m_Inventory;
     private HealthBar healthBar;
     private StatusEffectIcons statusEffectIcons;
@@ -74,9 +86,10 @@ public class PlayerController : MonoBehaviour
     public bool IsShooting { get => m_isShooting; set => m_isShooting = value; }
     public bool IsReloading { get => m_isReloading; set => m_isReloading = value; }
 
+    [Header("Player object reference")]
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
-    // UI
+    [Header("UI References")]
     public GameObject mainMenuButton;
     public GameObject retryLevelButton;
     public GameObject deathText;
@@ -103,6 +116,7 @@ public class PlayerController : MonoBehaviour
     {
         m_Camera = Camera.main;
         m_Animator = GetComponent<Animator>();
+        m_AudioSource = GetComponent<AudioSource>();
         m_Inventory = GetComponent<InventoryManager>();
         healthBar = GetComponentInChildren<HealthBar>();
         statusEffectIcons = GetComponentInChildren<StatusEffectIcons>();
@@ -226,6 +240,8 @@ public class PlayerController : MonoBehaviour
                 m_Animator.SetTrigger("DodgeLeft");
                 break;
         }
+
+        m_AudioSource.PlayOneShot(dashSound);   // Play dodge sound effect
 
         m_isDodging = true;
         DODGE_CURRENT_COOLDOWN = 0f;
@@ -617,6 +633,8 @@ public class PlayerController : MonoBehaviour
 
         bombRb.AddForce(forceToAdd, ForceMode.Impulse);
 
+        m_AudioSource.PlayOneShot(throwSound);  // Play throw sound effect
+
         items[3].SetActive(false);
     }
 
@@ -658,6 +676,7 @@ public class PlayerController : MonoBehaviour
     {
         m_isAlive = false;
         m_Animator.SetTrigger("Die");
+        m_AudioSource.PlayOneShot(deathSound);  // Play death sound effect
         // Death UI
         retryLevelButton.SetActive(true);
         mainMenuButton.SetActive(true);
@@ -681,6 +700,11 @@ public class PlayerController : MonoBehaviour
         if (playerHealth <= 0)
         {
             Die();
+        }
+        else
+        {
+            // Play hurt sound effect
+            m_AudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
         }
     }
     // Restart level and reset player functions

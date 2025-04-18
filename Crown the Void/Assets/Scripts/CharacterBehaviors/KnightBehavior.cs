@@ -8,12 +8,16 @@ public class KnightBehavior : MonoBehaviour
     private const float ATTACK_DURATION = 0.7f;
     private const float BASH_DURATION = 0.4f;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip[] swingSounds;
+
     private bool m_isAttacking = false;
     private bool m_isBashing = false;
     private bool m_isBlocking = false;
 
     private PlayerController pc;
     private Animator m_Animator;
+    private AudioSource m_AudioSource;
 
     public bool IsAttacking { get => m_isAttacking; }
     public bool IsBlocking { get => m_isBlocking; }
@@ -26,6 +30,7 @@ public class KnightBehavior : MonoBehaviour
     {
         pc = GetComponent<PlayerController>();
         m_Animator = GetComponent<Animator>();
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -76,6 +81,7 @@ public class KnightBehavior : MonoBehaviour
     private void Attack()
     {
         m_Animator.SetTrigger("Attack");
+        m_AudioSource.PlayOneShot(swingSounds[Random.Range(0, swingSounds.Length)]);
         m_isAttacking = true;
         pc.TakingAction = true;
         StartCoroutine(AttackCooldown());

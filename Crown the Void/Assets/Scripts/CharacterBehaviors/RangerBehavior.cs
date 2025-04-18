@@ -69,7 +69,7 @@ public class RangerBehavior : MonoBehaviour
     private void CheckForRangerAction()
     {
         // Drop Caltrop
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_caltropsInPouch > 0 && !pc.TakingAction)
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_caltropsInPouch > 0 && !pc.TakingAction && !pc.isPaused)
         {
             DropCaltrop();
         }

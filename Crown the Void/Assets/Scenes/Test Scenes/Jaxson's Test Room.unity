@@ -371,50 +371,12 @@ PrefabInstance:
     - target: {fileID: 5348988784192286130, guid: 37ae5e897a989cb4b9f3ced05107d73c, type: 3}
       propertyPath: itemDrop
       value: 
-      objectReference: {fileID: 4371133267229119537, guid: 000ea4537d2aefb4da8084a6fd0f21d4, type: 3}
+      objectReference: {fileID: 2422270639003448020, guid: 89a4cec5b507d6a42afb7cfcced2f81b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37ae5e897a989cb4b9f3ced05107d73c, type: 3}
---- !u!84 &670348428
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1247
-  m_Height: 839
-  m_AntiAliasing: 2
-  m_MipCount: -1
-  m_DepthStencilFormat: 94
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!84 &929239198
 RenderTexture:
   m_ObjectHideFlags: 0
@@ -476,6 +438,10 @@ PrefabInstance:
     - target: {fileID: 3802681557918282901, guid: 91c87173003e338489e13526ec309ae0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802681557918282901, guid: 91c87173003e338489e13526ec309ae0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 3802681557918282901, guid: 91c87173003e338489e13526ec309ae0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -540,7 +506,7 @@ PrefabInstance:
     - target: {fileID: 8308077543310474811, guid: 91c87173003e338489e13526ec309ae0, type: 3}
       propertyPath: m_TargetTexture
       value: 
-      objectReference: {fileID: 1231332846}
+      objectReference: {fileID: 1301542032}
     - target: {fileID: 8801730045558237169, guid: 91c87173003e338489e13526ec309ae0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -550,7 +516,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91c87173003e338489e13526ec309ae0, type: 3}
---- !u!84 &1231332846
+--- !u!84 &1301542032
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -564,8 +530,8 @@ RenderTexture:
   m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
   serializedVersion: 5
-  m_Width: 470
-  m_Height: 739
+  m_Width: 602
+  m_Height: 759
   m_AntiAliasing: 2
   m_MipCount: -1
   m_DepthStencilFormat: 94
@@ -580,7 +546,7 @@ RenderTexture:
   m_TextureSettings:
     serializedVersion: 2
     m_FilterMode: 1
-    m_Aniso: 0
+    m_Aniso: 1
     m_MipBias: 0
     m_WrapU: 1
     m_WrapV: 1
@@ -1421,7 +1387,7 @@ PrefabInstance:
     - target: {fileID: 5348988784192286130, guid: 37ae5e897a989cb4b9f3ced05107d73c, type: 3}
       propertyPath: itemDrop
       value: 
-      objectReference: {fileID: 2124381702400104410, guid: d5183a6ad213b2f4f8ce08bd053be5e2, type: 3}
+      objectReference: {fileID: 2422270639003448020, guid: 89a4cec5b507d6a42afb7cfcced2f81b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -48,6 +48,7 @@ public class EnemyBehavior : MonoBehaviour
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
     public bool IsAlive { get => isAlive; }
+    public bool IsStunned { get => isStunned; }
 
     private GameObject playerCharacter;
     PlayerController cs;
