@@ -5,12 +5,15 @@ using UnityEngine;
 public class Chest : MonoBehaviour, IInteractable
 {
     [SerializeField] private GameObject itemDrop;
+    [SerializeField] private AudioClip openChestSound;
 
+    private readonly bool m_isItem = false;
     private readonly int m_interactPriority = 1;
     private string m_interactionPrompt = "Open Chest";
     private bool m_hasInteractedWith = false;
 
     private Animator m_animator;
+    private AudioSource m_audioSource;
     private InteractionPopUpBehavior m_popUp;
     private GlowObject m_Glow;
 
@@ -18,9 +21,12 @@ public class Chest : MonoBehaviour, IInteractable
     public bool HasInteractedWith => m_hasInteractedWith;
     public int InteractPriority => m_interactPriority;
 
+    public bool IsItem => m_isItem;
+
     private void Start()
     {
         m_animator = GetComponent<Animator>();
+        m_audioSource = GetComponent<AudioSource>();
         m_popUp = GetComponentInChildren<InteractionPopUpBehavior>();
         m_Glow = GetComponent<GlowObject>();
     }
@@ -30,6 +36,7 @@ public class Chest : MonoBehaviour, IInteractable
     public bool Interact(Interactor interactor)
     {
         m_animator.SetTrigger("Open");
+        m_audioSource.PlayOneShot(openChestSound);
         m_hasInteractedWith = true;
         m_Glow.TurnOffGlow();
         Invoke(nameof(DropItem), 1f);

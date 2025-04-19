@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip throwSound;
     [SerializeField] private AudioClip[] hurtSounds;
     [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip pickUpItemSound;
     [SerializeField] private AudioClip drinkSound;
 
     private Camera m_Camera;
@@ -287,10 +288,12 @@ public class PlayerController : MonoBehaviour
 
     //-----------------------------------------------------------
     // Called by the Interactor when interacting with an object.
-    // Plays the interact animation and stops movement.
+    // Plays the interact animation and stops movement. If object
+    // is an item, play item pick up sound effect
     //-----------------------------------------------------------
-    public void Interact()
+    public void Interact(bool isItem)
     {
+        if (isItem) m_AudioSource.PlayOneShot(pickUpItemSound);
         m_Animator.SetTrigger("Interact");
         m_takingAction = true;
         Invoke(nameof(InteractDuration), INTERACT_DURATION);

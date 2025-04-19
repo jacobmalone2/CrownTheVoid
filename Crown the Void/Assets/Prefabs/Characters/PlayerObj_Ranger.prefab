@@ -1042,7 +1042,7 @@ Transform:
   m_GameObject: {fileID: 572113158531927426}
   serializedVersion: 2
   m_LocalRotation: {x: 0.42415544, y: -0.0000000012493072, z: 5.851444e-10, w: 0.9055894}
-  m_LocalPosition: {x: 2.407871, y: 12, z: -16.083254}
+  m_LocalPosition: {x: 0, y: 12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8063,8 +8063,12 @@ MonoBehaviour:
   fireStorm: {fileID: 715272769775294886, guid: 32c84b378c81d664f832c06e4772f63c, type: 3}
   dashSound: {fileID: 8300000, guid: 710709fe2349b30468c547e80e92bf15, type: 3}
   throwSound: {fileID: 8300000, guid: ff69b728f7181c44db0c1319068333b1, type: 3}
-  hurtSounds: []
-  deathSound: {fileID: 0}
+  hurtSounds:
+  - {fileID: 8300000, guid: 5efce7a4be6eaf44892746fda5d6a07f, type: 3}
+  - {fileID: 8300000, guid: 00e410b76df46a641a1ac63bbdd04f7e, type: 3}
+  - {fileID: 8300000, guid: ca8dae3a453c3074ca2f31efdbaa6a4e, type: 3}
+  deathSound: {fileID: 8300000, guid: d06fd09d69aea5e418186bf2e761cbf4, type: 3}
+  pickUpItemSound: {fileID: 8300000, guid: 0edfcd560969be74ab8f644eecc67950, type: 3}
   drinkSound: {fileID: 8300000, guid: 6604d09cae192304b810c49db4530d6a, type: 3}
   newPlayerObject: {fileID: 6911908548443147462}
   mainMenuButton: {fileID: 2383604808827155690}

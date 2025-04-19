@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour, IInteractable
 {
+    private readonly bool m_isItem = true;
     private readonly int m_interactPriority = 0;
     private string m_interactionPrompt = "Bomb";
     private bool m_hasInteractedWith = false;
@@ -17,6 +18,8 @@ public class Bomb : MonoBehaviour, IInteractable
     public bool HasInteractedWith => m_hasInteractedWith;
 
     public int InteractPriority => m_interactPriority;
+
+    public bool IsItem => m_isItem;
 
     private void Start()
     {

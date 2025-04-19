@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FuryPotion : MonoBehaviour, IInteractable
 {
+    private readonly bool m_isItem = true;
     private readonly int m_interactPriority = 0;
     private string m_interactionPrompt = "Fury Potion";
     private bool m_hasInteractedWith = false;
@@ -17,6 +18,8 @@ public class FuryPotion : MonoBehaviour, IInteractable
     public string InteractionPrompt => m_interactionPrompt;
 
     public bool HasInteractedWith => m_hasInteractedWith;
+
+    public bool IsItem => m_isItem;
 
     private void Start()
     {

@@ -3296,6 +3296,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0f0691b606769e246abafaaff1785f82, type: 3}
   - {fileID: 8300000, guid: 74d43cb13922fcb44b360fecb92730af, type: 3}
   deathSound: {fileID: 8300000, guid: 5a452180ac1529f4f8ba81deb1b8035a, type: 3}
+  pickUpItemSound: {fileID: 8300000, guid: 0edfcd560969be74ab8f644eecc67950, type: 3}
   drinkSound: {fileID: 8300000, guid: 6604d09cae192304b810c49db4530d6a, type: 3}
   newPlayerObject: {fileID: 3857685313149264909}
   mainMenuButton: {fileID: 3043422528377655984}
