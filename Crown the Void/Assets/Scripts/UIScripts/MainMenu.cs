@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene("StartingRoom");
-        Instantiate(playerObject, new Vector3(0, 0.2f, 0), Quaternion.identity).name = "PlayerObj";
+        Instantiate(playerObject, new Vector3(0, 0.2f, 0), Quaternion.identity);
     }
     public void QuitGame()
     {

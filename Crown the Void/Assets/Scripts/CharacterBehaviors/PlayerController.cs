@@ -731,7 +731,6 @@ public class PlayerController : MonoBehaviour
     public void RestartLevel()
     {
         SceneManager.LoadScene("StartingRoom");
-
         retryLevelButton.SetActive(false);
         mainMenuButton.SetActive(false);
         deathText.SetActive(false);
@@ -739,7 +738,7 @@ public class PlayerController : MonoBehaviour
         playerHealth = maxHealth;
         healthBar.TookDamage();
         
-        Instantiate(newPlayerObject, new Vector3(0, 0, 0), Quaternion.identity).name = "PlayerObj";
+        Instantiate(newPlayerObject, new Vector3(0, 0.2f, 0), Quaternion.identity);
         Destroy(gameObject);
     }
     public void MainMenu()
