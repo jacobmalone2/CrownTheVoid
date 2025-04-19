@@ -1042,7 +1042,7 @@ Transform:
   m_GameObject: {fileID: 572113158531927426}
   serializedVersion: 2
   m_LocalRotation: {x: 0.42415544, y: -0.0000000012493072, z: 5.851444e-10, w: 0.9055894}
-  m_LocalPosition: {x: 0, y: 12, z: -10}
+  m_LocalPosition: {x: 2.407871, y: 12, z: -16.083254}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2792,7 +2792,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -108}
+  m_AnchoredPosition: {x: 0, y: -125}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5870639657843360186
@@ -2925,23 +2925,26 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'WASD - Forward, Left, Backward, Right
 
-    LMB - Attack
-
-    RMB - Block
+    LMB - Drop Caltrop
 
     RMB
-    + LMB - Guard Break
+    - Aim
+
+    RMB + LMB - Fire Bolt
+
+    R - Reload Crossbow
 
     SPACE - Dodge
 
-    E - Interact
+    E
+    - Interact
 
-    Q - Use selected
-    Item
+    Q - Use selected Item
 
     SCROLL WHEEL - To select current item
 
-    ESC - Pause/Un-Pause
+    ESC
+    - Pause/Un-Pause
 
 '
   m_isRightToLeft: 0
@@ -3856,7 +3859,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -149}
+  m_AnchoredPosition: {x: 0, y: -155}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3742693961611392596
@@ -7611,7 +7614,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.2999268, y: -90}
+  m_AnchoredPosition: {x: 2.2999268, y: -105}
   m_SizeDelta: {x: 97.2667, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7390035235901093016
@@ -7944,6 +7947,7 @@ GameObject:
   - component: {fileID: 3811467734271944759}
   - component: {fileID: 7855086016177783025}
   - component: {fileID: 5245691367246202043}
+  - component: {fileID: 387043511075893828}
   m_Layer: 6
   m_Name: PlayerObj_Ranger
   m_TagString: Player
@@ -8057,6 +8061,11 @@ MonoBehaviour:
   - {fileID: 7574801289139176022}
   activeBomb: {fileID: 4800133577657630234, guid: ba7633d4b908ef34796da01ebdbd4d4e, type: 3}
   fireStorm: {fileID: 715272769775294886, guid: 32c84b378c81d664f832c06e4772f63c, type: 3}
+  dashSound: {fileID: 8300000, guid: 710709fe2349b30468c547e80e92bf15, type: 3}
+  throwSound: {fileID: 8300000, guid: ff69b728f7181c44db0c1319068333b1, type: 3}
+  hurtSounds: []
+  deathSound: {fileID: 0}
+  drinkSound: {fileID: 8300000, guid: 6604d09cae192304b810c49db4530d6a, type: 3}
   newPlayerObject: {fileID: 6911908548443147462}
   mainMenuButton: {fileID: 2383604808827155690}
   retryLevelButton: {fileID: 451520093927241805}
@@ -8135,6 +8144,9 @@ MonoBehaviour:
   m_aimStartPoint: {fileID: 5424979016230240578}
   m_projectile: {fileID: 9096750347750925759, guid: f0e189ce2fdd1ef45aed2e6183b9cc01, type: 3}
   m_caltrop: {fileID: 7404899072922679105, guid: fa3cf30bdf6c96e40bf988eb9f7e06e1, type: 3}
+  fireArrowSound: {fileID: 8300000, guid: 2ff1d3ee7822060429a95f9d5026ff44, type: 3}
+  reloadSound: {fileID: 8300000, guid: eb1d1ec9388c83e42887f703c930469c, type: 3}
+  dropCaltropSound: {fileID: 8300000, guid: 32960bcfdd26ad34cb17c8882ad9d8ac, type: 3}
 --- !u!120 &5245691367246202043
 LineRenderer:
   serializedVersion: 2
@@ -8239,6 +8251,102 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!82 &387043511075893828
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6911908548443147462}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6922705785302336600
 GameObject:
   m_ObjectHideFlags: 0

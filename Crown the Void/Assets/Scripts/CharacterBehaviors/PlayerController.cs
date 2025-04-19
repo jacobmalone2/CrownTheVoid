@@ -199,12 +199,12 @@ public class PlayerController : MonoBehaviour
     private void CheckForAction()
     {
         // Directional dodge
-        if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge))
+        if (Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge && !isPaused)
         {
             Dodge();
         }
         // Use Item
-        if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction)
+        if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction && !isPaused)
         {
             UseItem();
         }
@@ -352,13 +352,22 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1;
             pauseMenu.SetActive(false);
             isPaused = false;
-
+            // Enable aim line if player is ranger and aiming
+            if (gameObject.name.Equals("PlayerObj_Ranger") && m_isAiming)
+            {
+                GetComponent<LineRenderer>().enabled = true;
+            }
         }
         else
         {
             Time.timeScale = 0;
             pauseMenu.SetActive(true);
             isPaused = true;
+            // Disable aim line if player is ranger
+            if (gameObject.name.Equals("PlayerObj_Ranger"))
+            {
+                GetComponent<LineRenderer>().enabled = false;
+            }
         }
     }
     public void QuitGame()
@@ -709,7 +718,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                // Play hurt sound effect
+                // Stop other sounds and play hurt sound effect
+                m_AudioSource.Stop();
                 m_AudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
             }
         }

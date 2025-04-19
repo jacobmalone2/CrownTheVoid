@@ -47,17 +47,17 @@ public class KnightBehavior : MonoBehaviour
     private void CheckForKnightAction()
     {
         // Sword swing attack
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && !pc.TakingAction)
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && !pc.TakingAction && !pc.isPaused)
         {
             Attack();
         }
         // Start Block
-        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !pc.TakingAction)
+        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !pc.TakingAction && !pc.isPaused)
         {
             StartBlock();
         }
         // Shield Bash
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isBlocking)
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isBlocking && !pc.isPaused)
         {
             ShieldBash();
         }

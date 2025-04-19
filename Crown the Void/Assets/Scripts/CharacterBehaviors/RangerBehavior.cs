@@ -13,13 +13,21 @@ public class RangerBehavior : MonoBehaviour
     private const int MAX_ARROWS = 3;
     private const int MAX_CALTROPS = 3;
 
+    [Header("Ranger Settings")]
     [SerializeField] private float m_shootForce = 0.4f;
     [SerializeField] private int m_arrowCount = 3;
     [SerializeField] private int m_caltropsInPouch = 3;
+
+    [Header("Gameobject References")]
     [SerializeField] private Transform m_shootPoint;
     [SerializeField] private Transform m_aimStartPoint;
     [SerializeField] private GameObject m_projectile;
     [SerializeField] private GameObject m_caltrop;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip fireArrowSound;
+    [SerializeField] private AudioClip reloadSound;
+    [SerializeField] private AudioClip dropCaltropSound;
 
     private bool m_isAiming;
     private bool m_isShooting;
@@ -29,6 +37,7 @@ public class RangerBehavior : MonoBehaviour
 
     private PlayerController pc;
     private Animator m_Animator;
+    private AudioSource m_AudioSource;
     private ArrowCountUI m_arrowCountUI;
     private CaltropUI m_caltropUI;
     private RaycastHit m_target;
@@ -42,6 +51,7 @@ public class RangerBehavior : MonoBehaviour
     {
         pc = GetComponent<PlayerController>();
         m_Animator = GetComponent<Animator>();
+        m_AudioSource = GetComponent<AudioSource>();
         m_aimLine = gameObject.GetComponent<LineRenderer>();
         m_arrowCountUI = gameObject.GetComponentInChildren<ArrowCountUI>();
         m_caltropUI = gameObject.GetComponentInChildren<CaltropUI>();
@@ -69,22 +79,25 @@ public class RangerBehavior : MonoBehaviour
     private void CheckForRangerAction()
     {
         // Drop Caltrop
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_caltropsInPouch > 0 && !pc.TakingAction && !pc.isPaused)
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_caltropsInPouch > 0 &&
+            !pc.TakingAction && !pc.isPaused)
         {
             DropCaltrop();
         }
         // Start Aiming
-        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !pc.TakingAction)
+        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !pc.TakingAction && !pc.isPaused)
         {
             StartAiming();
         }
         // Shoot Arrow
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isAiming && m_arrowCount > 0 && !m_isShooting)
+        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isAiming &&
+            m_arrowCount > 0 && !m_isShooting && !pc.isPaused)
         {
             ShootArrow();
         }
         // Reload Arrows
-        if (Input.GetKeyDown(KeyCode.R) && m_arrowCount < MAX_ARROWS && (!pc.TakingAction || m_isAiming && !m_isShooting))
+        if (Input.GetKeyDown(KeyCode.R) && m_arrowCount < MAX_ARROWS && 
+            (!pc.TakingAction || m_isAiming && !m_isShooting) && !pc.isPaused)
         {
             ReloadArrows();
         }
@@ -107,6 +120,7 @@ public class RangerBehavior : MonoBehaviour
     private void DropCaltrop()
     {
         m_droppedCaltrops.Enqueue(Instantiate(m_caltrop, transform.position, transform.rotation));
+        m_AudioSource.PlayOneShot(dropCaltropSound);    // Play drop caltrop sound effect
 
         // If dropped caltrops are greater than the max, gets rid of the oldest one.
         if (m_droppedCaltrops.Count > MAX_CALTROPS)
@@ -178,6 +192,7 @@ public class RangerBehavior : MonoBehaviour
     private void ShootArrow()
     {
         m_Animator.SetTrigger("Shoot");
+        m_AudioSource.PlayOneShot(fireArrowSound);
         m_isShooting = true;
         pc.IsShooting = true;
 
@@ -220,6 +235,7 @@ public class RangerBehavior : MonoBehaviour
     private void ReloadArrows()
     {
         m_Animator.SetTrigger("Reload");
+        m_AudioSource.PlayOneShot(reloadSound);
         pc.TakingAction = true;
         pc.IsReloading = true;
         m_isReloading = true;

@@ -6,6 +6,8 @@ public class RangerProjectile : MonoBehaviour
 {
     private const float PROJECTILE_LIFETIME = 8f;
 
+    [SerializeField] private AudioClip hitTargetSound;
+
     private PlayerController pc;
     private Rigidbody rb;
 
@@ -35,6 +37,7 @@ public class RangerProjectile : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             collision.gameObject.GetComponent<EnemyBehavior>().TakeDamage(pc.AttackDamage);
+            collision.gameObject.GetComponent<AudioSource>().PlayOneShot(hitTargetSound);   // Play arrow impact sound effect
             DestroyProjectile();
         }
     }
