@@ -96,4 +96,9 @@ public class MeleeEnemyAddedBehavior : MonoBehaviour
     {
         sword.CheckDealDamage();
     }
+
+    public void PlaySwingSoundEffect()
+    {
+        sword.PlaySwingSoundEffect();
+    }
 }

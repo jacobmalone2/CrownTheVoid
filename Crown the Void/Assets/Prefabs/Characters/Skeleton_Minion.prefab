@@ -2629,6 +2629,11 @@ MonoBehaviour:
   enemyBehavior: {fileID: 5484855531562487179}
   meleeBehavior: {fileID: 1610707747607299387}
   blockSound: {fileID: 8300000, guid: 12aedf85363fcf6468855300013fad4a, type: 3}
+  impactSound: {fileID: 8300000, guid: 028d44f8fa1084549a8378f7b10f4610, type: 3}
+  swingSounds:
+  - {fileID: 8300000, guid: 034b3b6fa4d53954dbc5755ed5b78c67, type: 3}
+  - {fileID: 8300000, guid: 7314056de4f45f047808e6c8be0d50e4, type: 3}
+  - {fileID: 8300000, guid: 537860a1e717fbf41ab13f2a2cde7566, type: 3}
 --- !u!82 &1727184552693427037
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2640,8 +2645,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0

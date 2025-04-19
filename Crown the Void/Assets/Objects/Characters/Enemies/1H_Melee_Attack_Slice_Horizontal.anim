@@ -41055,6 +41055,13 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0.16666667
+    functionName: PlaySwingSoundEffect
+    data: 
+    objectReferenceParameter: {fileID: 11500000, guid: a5716788c7d7b1949a6f060c113a97c7, type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.26666668
     functionName: CheckDealDamage
     data: 

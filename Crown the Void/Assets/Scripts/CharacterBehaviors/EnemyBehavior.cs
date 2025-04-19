@@ -73,7 +73,6 @@ public class EnemyBehavior : MonoBehaviour
     IEnumerator StartGame(float startDelay)
     {
         yield return new WaitForSeconds(startDelay);
-        Debug.Log("isAlive True");
         isAlive = true;
     }
 
@@ -151,7 +150,7 @@ public class EnemyBehavior : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (canTakeDamage)
+        if (canTakeDamage && isAlive)
         {
             health -= damage;
             healthBar.UpdateHealthBar(health, maxHealth);
@@ -171,7 +170,7 @@ public class EnemyBehavior : MonoBehaviour
             }
         }
     }
-
+    
     // Spawns a timer that prevents the enemy from taking damage
     public void StopDamageForTime(float time)
     {

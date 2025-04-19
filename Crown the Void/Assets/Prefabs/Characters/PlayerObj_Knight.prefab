@@ -4187,9 +4187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a7e0e65de170148b0d304ab664d4d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pc: {fileID: 5900043847187923881}
-  kb: {fileID: 5322946677031714639}
-  animator: {fileID: 5565198935035242299}
+  impactSound: {fileID: 8300000, guid: 028d44f8fa1084549a8378f7b10f4610, type: 3}
 --- !u!82 &1484806166319087062
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4202,7 +4200,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0

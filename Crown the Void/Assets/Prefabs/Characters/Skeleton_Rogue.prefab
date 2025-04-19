@@ -3138,6 +3138,7 @@ MonoBehaviour:
   shootDelay: 4
   launchForce: 40
   destroyTimer: 3
+  fireArrowSound: {fileID: 8300000, guid: 2ff1d3ee7822060429a95f9d5026ff44, type: 3}
 --- !u!82 &2908263780902771357
 AudioSource:
   m_ObjectHideFlags: 0

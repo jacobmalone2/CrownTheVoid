@@ -8,6 +8,8 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     [SerializeField] private EnemyBehavior enemyBehavior;
     [SerializeField] private MeleeEnemyAddedBehavior meleeBehavior;
     [SerializeField] private AudioClip blockSound;
+    [SerializeField] private AudioClip impactSound;
+    [SerializeField] private AudioClip[] swingSounds;
 
     private bool canHitPlayer = true;
     private bool isTouching = false;
@@ -20,7 +22,7 @@ public class EnemySwordCollisionDetection : MonoBehaviour
     {
         pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         kb = GameObject.FindWithTag("Player").GetComponent<KnightBehavior>();
-        m_AudioSource = pc.GetComponent<AudioSource>();
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     public void CheckDealDamage()
@@ -28,9 +30,14 @@ public class EnemySwordCollisionDetection : MonoBehaviour
         if(isTouching)
         {
             if (canHitPlayer)
+            {
                 pc.TakeDamage(enemyBehavior.dmgPerHit);
+                m_AudioSource.PlayOneShot(impactSound);
+            }
             else
+            {
                 m_AudioSource.PlayOneShot(blockSound); // Play block sound effect
+            }
         }
     }
 
@@ -58,5 +65,10 @@ public class EnemySwordCollisionDetection : MonoBehaviour
 
         if (other.gameObject.CompareTag("Shield"))
             canHitPlayer = true;
+    }
+
+    public void PlaySwingSoundEffect()
+    {
+        m_AudioSource.PlayOneShot(swingSounds[Random.Range(0, swingSounds.Length)]);
     }
 }
