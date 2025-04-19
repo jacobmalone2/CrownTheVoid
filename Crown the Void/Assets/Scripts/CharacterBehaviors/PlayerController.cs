@@ -11,11 +11,11 @@ public class PlayerController : MonoBehaviour
     private const float ITEM_THROW_DURATION = 1.36f;
     private const float SPELL_CAST_DURATION = 4.2f;
     private const float TIME_TO_DRINK = 0.6f;
-    private const float HEAL_FACTOR = 0.25f;
+    private const float HEAL_FACTOR = 0.40f;
     private const int ATTACK_BOOST_MULT = 2;
     private const int DAMAGE_DIVIDER = 2;
     private const float BUFF_TIMER_TICK = 0.1f;
-    private const float BUFF_DURATION = 15f;
+    private const float BUFF_DURATION = 30f;
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
     public float DODGE_CURRENT_COOLDOWN = 0f;
