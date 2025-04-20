@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MainMenuUI : MonoBehaviour
 {
+    [SerializeField] private GameObject settingsScreen;
     [SerializeField] private GameObject creditsScreen;
     [SerializeField] private GameObject menuScreen;
 
@@ -13,9 +14,16 @@ public class MainMenuUI : MonoBehaviour
         creditsScreen.SetActive(true);
     }
 
+    public void ShowSettings()
+    {
+        menuScreen.SetActive(false);
+        settingsScreen.SetActive(true);
+    }
+
     public void BackToMenu()
     {
         creditsScreen.SetActive(false);
+        settingsScreen.SetActive(false);
         menuScreen.SetActive(true);
     }
 }
