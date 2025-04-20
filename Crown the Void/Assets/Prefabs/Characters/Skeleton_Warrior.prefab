@@ -2421,6 +2421,15 @@ MonoBehaviour:
   healthBar: {fileID: 0}
   walkSpeed: 3
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
+  hurtSounds:
+  - {fileID: 8300000, guid: 92fbaea2e432ffb43a40819492ac4e2d, type: 3}
+  - {fileID: 8300000, guid: 8ed98987802ed3a4bad324703b21760a, type: 3}
+  - {fileID: 8300000, guid: 3d56ebd5493c7fa46a239bfb72b527cd, type: 3}
+  stunSounds:
+  - {fileID: 8300000, guid: 819a9daf863474840ad4cd76fc1823c6, type: 3}
+  - {fileID: 8300000, guid: 789ce8c01edf90e41890ebaa15535bf2, type: 3}
+  - {fileID: 8300000, guid: fcb5971b9c46bd9459a1c73a11d8348d, type: 3}
+  deathSound: {fileID: 8300000, guid: 06b67cb2d85a42149a39ca98bf37dc04, type: 3}
   startDelay: 5
 --- !u!114 &8650757185402871357
 MonoBehaviour:

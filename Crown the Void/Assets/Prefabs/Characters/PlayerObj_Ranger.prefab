@@ -1152,7 +1152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -149}
+  m_AnchoredPosition: {x: 0, y: -160}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1056469266495717156
@@ -2255,27 +2255,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'WASD - Forward, Left, Backward, Right
-
-    LMB - Attack
-
-    RMB - Block
-
-    RMB
-    + LMB - Guard Break
-
-    SPACE - Dodge
-
-    E - Interact
-
-    Q - Use selected
-    Item
-
-    SCROLL WHEEL - To select current item
-
-    ESC - Pause/Un-Pause
-
-'
+  m_text: "WASD - Forward, Left, Backward, Right\r\nLMB - Drop Caltrop\r\nRMB - Aim\r\nRMB
+    + LMB - Fire Bolt\r\nR - Reload Crossbow\r\nSPACE - Dodge\r\nE - Interact\r\nQ
+    - Use selected Item\r\nSCROLL WHEEL - To select current item\r\nESC - Pause/Un-Pause\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2380,7 +2362,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -108}
+  m_AnchoredPosition: {x: 0, y: -130}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7791613066890938570
@@ -8368,7 +8350,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.2999268, y: -90}
+  m_AnchoredPosition: {x: 2.2999268, y: -110}
   m_SizeDelta: {x: 97.2667, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6617829112532811240
@@ -9912,7 +9894,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -199}
+  m_AnchoredPosition: {x: 0, y: -205}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2656721385416778017

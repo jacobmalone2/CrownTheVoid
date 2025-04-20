@@ -35,6 +35,11 @@ public class EnemyBehavior : MonoBehaviour
     private bool canDealDamage = true;
     private bool canTakeDamage = true;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip[] hurtSounds;
+    [SerializeField] private AudioClip[] stunSounds;
+    [SerializeField] private AudioClip deathSound;
+
     [Header("Game Settings")]
     [SerializeField] private float startDelay = 7.3f;
 
@@ -44,6 +49,7 @@ public class EnemyBehavior : MonoBehaviour
     [NonSerialized] public Transform player;
     [NonSerialized] public NavMeshAgent agent;
     private Animator enemyAnimator;
+    private AudioSource audioSource;
 
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
@@ -60,6 +66,7 @@ public class EnemyBehavior : MonoBehaviour
         player = GameObject.FindWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         StartCoroutine(StartGame(startDelay));
 
@@ -165,8 +172,15 @@ public class EnemyBehavior : MonoBehaviour
 
                 ResetAnimator();
                 enemyAnimator.SetBool("isDying", true);
+                audioSource.PlayOneShot(deathSound);    // Play death sound effect
 
                 Invoke(nameof(DestroyEnemy), 2.5f);
+            }
+            else
+            {
+                // Stop other sounds and play hurt sound effect
+                audioSource.Stop();
+                audioSource.PlayOneShot(hurtSounds[UnityEngine.Random.Range(0, hurtSounds.Length)]);
             }
         }
     }
@@ -188,6 +202,10 @@ public class EnemyBehavior : MonoBehaviour
         if (!isStunned)
         {
             enemyAnimator.SetTrigger("stun");
+            // Stop other sounds and play stun sound effect
+            audioSource.Stop();
+            audioSource.PlayOneShot(stunSounds[UnityEngine.Random.Range(0, hurtSounds.Length)]);
+
             CanDealDamage = false;
             isStunned = true;
 
