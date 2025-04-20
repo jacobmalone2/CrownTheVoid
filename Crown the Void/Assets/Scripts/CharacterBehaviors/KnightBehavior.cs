@@ -82,6 +82,7 @@ public class KnightBehavior : MonoBehaviour
     private void Attack()
     {
         m_Animator.SetTrigger("Attack");
+        m_AudioSource.Stop();       // stop movement sound
         m_AudioSource.PlayOneShot(swingSounds[Random.Range(0, swingSounds.Length)]);
         m_isAttacking = true;
         pc.TakingAction = true;
@@ -101,6 +102,7 @@ public class KnightBehavior : MonoBehaviour
     //---------------------------------------------------------------------------
     private void StartBlock()
     {
+        m_AudioSource.Stop();       // stop movement sound
         m_Animator.SetBool("IsBlocking", true);
         pc.TakingAction = true;
         m_isBlocking = true;

@@ -68,7 +68,8 @@ public class PlayerController : MonoBehaviour
     private MoveAnim m_moveAnim;
 
     private float m_camDistanceToPlayer = 15.5f;
-    
+
+    private bool m_isStopped = true;
     private bool m_isDodging = false;
     private bool m_canDodge = true;
     private bool m_takingAction = false;
@@ -243,6 +244,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
+        m_AudioSource.Stop();                   // Stop move sound effect
         m_AudioSource.PlayOneShot(dashSound);   // Play dodge sound effect
 
         m_isDodging = true;
@@ -293,6 +295,7 @@ public class PlayerController : MonoBehaviour
     //-----------------------------------------------------------
     public void Interact(bool isItem)
     {
+        m_AudioSource.Stop();       // stop move sound effect
         if (isItem) m_AudioSource.PlayOneShot(pickUpItemSound);
         m_Animator.SetTrigger("Interact");
         m_takingAction = true;
@@ -317,12 +320,14 @@ public class PlayerController : MonoBehaviour
             case InventoryManager.ItemType.NullItem:
                 break;
             case InventoryManager.ItemType.HealthPotion:
+                m_AudioSource.Stop();       // stop move sound effect
                 m_Inventory.RemoveItem();
                 HealthPotionEffect();
                 break;
             case InventoryManager.ItemType.FuryPotion:
                 if (!m_attackUp)
                 {
+                    m_AudioSource.Stop();
                     m_Inventory.RemoveItem();
                     FuryPotionEffect();
                 }
@@ -330,15 +335,18 @@ public class PlayerController : MonoBehaviour
             case InventoryManager.ItemType.SturdyPotion:
                 if (!m_defenceUp)
                 {
+                    m_AudioSource.Stop();
                     m_Inventory.RemoveItem();
                     SturdyPotionEffect();
                 }
                 break;
             case InventoryManager.ItemType.Bomb:
+                m_AudioSource.Stop();
                 m_Inventory.RemoveItem();
                 BombEffect();
                 break;
             case InventoryManager.ItemType.FireStormTome:
+                m_AudioSource.Stop();
                 m_Inventory.RemoveItem();
                 FireStormEffect();
                 break;
@@ -350,6 +358,7 @@ public class PlayerController : MonoBehaviour
     //---------------------------------------------
     public void PauseGame(bool pause)
     {
+        m_AudioSource.Stop();       // stop move sound effect
         if (isPaused)
         {
             Time.timeScale = 1;
@@ -454,25 +463,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Apply running animation based on the found movement direction.
+    // Apply running animation and sound effect based on the found movement direction.
     private void AnimatePlayer()
     {
         switch(m_moveAnim)
         {
             case MoveAnim.Idle:
                 m_Animator.SetTrigger("IsIdle");
+                if (!m_isStopped)
+                {
+                    m_isStopped = true;
+                    m_AudioSource.Stop();
+                }
                 break;
             case MoveAnim.Forward:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingForward");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Backward:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingBackward");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Right:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingRight");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Left:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingLeft");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
         }
     }

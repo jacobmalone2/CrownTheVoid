@@ -67,6 +67,7 @@ public class EnemyBehavior : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        audioSource.PlayDelayed(UnityEngine.Random.Range(0, 3f));
 
         StartCoroutine(StartGame(startDelay));
 
@@ -95,6 +96,11 @@ public class EnemyBehavior : MonoBehaviour
 
             //Tests where the player is in relation to itself and responds accordingly
             if (!playerInSightRange && !playerInAttackRange) Patroling();
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
 
             if (cs.playerHealth <= 0)
             {

@@ -161,6 +161,7 @@ public class RangerBehavior : MonoBehaviour
     //----------------------------------------------------------------
     private void StartAiming()
     {
+        m_AudioSource.Stop();       // stop movement sound
         m_Animator.SetBool("IsAiming", true);
         pc.TakingAction = true;
         m_isAiming = true;
@@ -235,6 +236,7 @@ public class RangerBehavior : MonoBehaviour
     private void ReloadArrows()
     {
         m_Animator.SetTrigger("Reload");
+        m_AudioSource.Stop();       // stop movement sound
         m_AudioSource.PlayOneShot(reloadSound);
         pc.TakingAction = true;
         pc.IsReloading = true;
