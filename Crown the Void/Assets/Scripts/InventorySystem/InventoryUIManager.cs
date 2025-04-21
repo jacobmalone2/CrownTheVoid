@@ -22,17 +22,17 @@ public class InventoryUIManager : MonoBehaviour
         // set to default color
         for (int i = 0; i < slots.Length; i++)
         {
-            if (i != m_inventoryManager.m_equippedItemIndex)
+            if (i != m_inventoryManager.EquippedItemIndex)
             {
                 slots[i].GetComponentInChildren<Image>().color = defaultColor;
             }
         }
-        slots[m_inventoryManager.m_equippedItemIndex].GetComponentInChildren<Image>().color = selectedColor;        
+        slots[m_inventoryManager.EquippedItemIndex].GetComponentInChildren<Image>().color = selectedColor;        
     }
 
     public void AddInventorySlot(InventoryItem item)
     {
-        invSize = m_inventoryManager.Inventory.Count;
+        invSize = m_inventoryManager.NumItems;
         //obj.transform.SetParent(transform, false);
         Slot slot = slots[invSize - 1].GetComponent<Slot>();
         Debug.Log("Slot: " + slot);
@@ -44,10 +44,10 @@ public class InventoryUIManager : MonoBehaviour
     public void RemoveInventorySlot()
     {
         // Deactivate the last slot in the inventory
-        slots[m_inventoryManager.m_equippedItemIndex].SetActive(false);
-        invSize = m_inventoryManager.Inventory.Count;
+        slots[m_inventoryManager.EquippedItemIndex].SetActive(false);
+        invSize = m_inventoryManager.NumItems;
         //Shift the slots down
-        for (int i = m_inventoryManager.m_equippedItemIndex; i < invSize - 1; i++)
+        for (int i = m_inventoryManager.EquippedItemIndex; i < invSize - 1; i++)
         {
             InventoryItem item = m_inventoryManager.Inventory[i + 1];
             Slot slot = slots[invSize - 1].GetComponent<Slot>();

@@ -1,12 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    private int m_maxItems = 5;         // Max items inventory can hold
-    public int m_equippedItemIndex = 0;    // The index position of the currently equipped item
-    public static InventoryManager current; 
+    private int m_maxItems = 5;             // Max items inventory can hold
+    private int m_equippedItemIndex = 0;     // The index position of the currently equipped item
+    private int m_numItems = 0;              // Number of items in inventory
     public InventoryUIManager InventoryUIManager; // Reference to the InventoryUIManager
 
     public enum ItemType        // Enumeration type to represent types of items
@@ -19,17 +20,16 @@ public class InventoryManager : MonoBehaviour
         FireStormTome
     }
 
-    private List<InventoryItem> m_inventory;
+    private InventoryItem[] m_inventory;
 
-    public List<InventoryItem> Inventory { get => m_inventory; }
-
+    public  InventoryItem[] Inventory { get => m_inventory; }
+    public int NumItems { get => m_numItems; }
+    public int EquippedItemIndex { get => m_equippedItemIndex; }
 
     private void Awake()
     {
-        m_inventory = new List<InventoryItem>();
+        m_inventory = new InventoryItem[m_maxItems];
         InventoryUIManager = gameObject.GetComponentInChildren<InventoryUIManager>();
-        current = this;
-
     }
 
     // Check for item swap each frame
@@ -46,20 +46,29 @@ public class InventoryManager : MonoBehaviour
     public void AddItem(InventoryItemData itemData)
     {
         InventoryItem newItem = new InventoryItem(itemData);
-        if (m_inventory.Count < m_maxItems)
+        if (m_numItems < m_maxItems)
         {
-            m_inventory.Add(newItem);
+            for (int i = 0; i < m_inventory.Length; i++)
+            {
+                if (m_inventory[i] == null)
+                {
+                    m_inventory[i] = newItem;
+                    m_numItems++;
+                    break;
+                }
+            }
             // Add the item to the inventory UI
-            InventoryUIManager.AddInventorySlot(newItem);
+            //InventoryUIManager.AddInventorySlot(newItem);
         }
         else
         {
             DropItem();
-            m_inventory.Insert(m_equippedItemIndex, newItem);
+            m_inventory[m_equippedItemIndex] = newItem;
         }
-        foreach (InventoryItem item in m_inventory)
+        for (int i = 0; i < m_inventory.Length; i++)
         {
-            Debug.Log(item.Data.id + " Slot " + m_inventory.IndexOf(item));
+            if (m_inventory[i] != null) Debug.Log(m_inventory[i].Data.id + " Slot " + i);
+            else Debug.Log("Empty slot");
         }
         Debug.Log("Equipped item index: " + m_equippedItemIndex);
     }
@@ -94,30 +103,27 @@ public class InventoryManager : MonoBehaviour
 
             return ItemType.NullItem;
         }
-        catch (System.ArgumentOutOfRangeException)
+        catch (NullReferenceException)
         {
 
             return ItemType.NullItem;
         }
     }
-
+    
     // Removes the currently equipped item from the inventory list
     public void RemoveItem()
     {
-        m_inventory.RemoveAt(m_equippedItemIndex);
+        m_inventory[m_equippedItemIndex] = null;
+        m_numItems--;
 
-        // Adjust equipped item index if it's out of bounds and we still have items left
-        if (m_equippedItemIndex >= m_inventory.Count && m_equippedItemIndex > 0)
+        for (int i = 0; i < m_inventory.Length; i++)
         {
-            m_equippedItemIndex--;
-        }
-        foreach (InventoryItem item in m_inventory)
-        {
-            Debug.Log(item.Data.id + " Slot " + m_inventory.IndexOf(item));
+            if (m_inventory[i] != null) Debug.Log(m_inventory[i].Data.id + " Slot " + i);
+            else Debug.Log("Empty slot");
         }
         Debug.Log("Equipped item index: " + m_equippedItemIndex);
         // Remove the item from the inventory UI
-        InventoryUIManager.RemoveInventorySlot();
+        //InventoryUIManager.RemoveInventorySlot();
     }
 
     // Swaps the currently equipped item forward by one slot
@@ -130,7 +136,7 @@ public class InventoryManager : MonoBehaviour
         }
         Debug.Log(m_equippedItemIndex);
         // Set the equipped item in the UI
-        InventoryUIManager.SelectedItem();
+        //InventoryUIManager.SelectedItem();
     }
 
     // Swaps the currently equipped item backward by one slot
@@ -143,7 +149,7 @@ public class InventoryManager : MonoBehaviour
         }
         Debug.Log(m_equippedItemIndex);
         // Set the equipped item in the UI
-        InventoryUIManager.SelectedItem();
+        //InventoryUIManager.SelectedItem();
     }
 
     // Drops the currently held item in front of the player and removes it from the inventory
@@ -154,7 +160,7 @@ public class InventoryManager : MonoBehaviour
         Instantiate(droppedItem, gameObject.transform.position +
             gameObject.transform.forward, droppedItem.transform.rotation);
 
-        m_inventory.RemoveAt(m_equippedItemIndex);
+        m_inventory[m_equippedItemIndex] = null;
     }
     
 
