@@ -9,7 +9,7 @@ public class MainMenu : MonoBehaviour
     private bool hasShadowKey = false;
     private bool hasBloodKey = false;
     private bool hasVoidKey = false;
-
+    public GameObject[] charactersPrefabs;
     [SerializeField] private Button continueButton;
 
     public GameObject playerObject;
@@ -30,15 +30,17 @@ public class MainMenu : MonoBehaviour
 
     public void NewGame()
     {
-        SceneManager.LoadScene("StartingRoom");
-        GameObject player = Instantiate(playerObject, new Vector3(0, 0.2f, 0), Quaternion.identity);
-        player.GetComponent<KeyManager>().ClearKeyData();
+        SceneManager.LoadScene("CharacterSelect");
+        
     }
 
     public void Continue()
     {
+        // Load the selected character prefab
+        int selectedCharacter = PlayerPrefs.GetInt("SelectedCharacter");
         SceneManager.LoadScene("StartingRoom");
-        Instantiate(playerObject, new Vector3(0, 0.2f, 0), Quaternion.identity);
+        GameObject prefab = charactersPrefabs[selectedCharacter];
+        Instantiate(prefab, new Vector3(0, 0.2f, 0), Quaternion.identity);
     }
 
     public void QuitGame()
