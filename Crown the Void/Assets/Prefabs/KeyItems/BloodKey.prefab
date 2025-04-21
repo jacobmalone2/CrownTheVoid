@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 6155251115063604693}
   - component: {fileID: 1233013805213525049}
   - component: {fileID: 7873973626698540779}
-  - component: {fileID: 442263630106053215}
+  - component: {fileID: 4247552040722764826}
   - component: {fileID: 7754307991234507054}
   - component: {fileID: 8272067793223231256}
   - component: {fileID: 6222475280415570452}
@@ -339,8 +339,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &442263630106053215
-BoxCollider:
+--- !u!135 &4247552040722764826
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -358,7 +358,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.8956595, y: 0.40287903, z: 0.14180309}
+  m_Radius: 0.44782975
   m_Center: {x: -0.25286654, y: -0.0000007301569, z: 0.000000018626451}
 --- !u!114 &7754307991234507054
 MonoBehaviour:
@@ -403,6 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_interactionPrompt: Blood Key
+  typeOfKey: 1
 --- !u!1 &3975727922471957716
 GameObject:
   m_ObjectHideFlags: 0

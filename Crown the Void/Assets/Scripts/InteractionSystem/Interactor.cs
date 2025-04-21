@@ -46,7 +46,8 @@ public class Interactor : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E) && !m_pc.TakingAction)
                 {
                     interactable.Interact(this);
-                    m_pc.Interact(interactable.IsItem);
+                    m_pc.Interact(interactable.IsItem, interactable.IsKeyItem);
+                    if (interactable.IsKeyItem) m_pc.PickUpKeyItem(((KeyItem)interactable).TypeOfKey);
                 }
             }
         }

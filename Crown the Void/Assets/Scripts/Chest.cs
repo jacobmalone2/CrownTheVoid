@@ -8,6 +8,7 @@ public class Chest : MonoBehaviour, IInteractable
     [SerializeField] private AudioClip openChestSound;
 
     private readonly bool m_isItem = false;
+    private readonly bool m_isKeyItem = false;
     private readonly int m_interactPriority = 1;
     private string m_interactionPrompt = "Open Chest";
     private bool m_hasInteractedWith = false;
@@ -22,6 +23,8 @@ public class Chest : MonoBehaviour, IInteractable
     public int InteractPriority => m_interactPriority;
 
     public bool IsItem => m_isItem;
+
+    public bool IsKeyItem => m_isKeyItem;
 
     private void Start()
     {

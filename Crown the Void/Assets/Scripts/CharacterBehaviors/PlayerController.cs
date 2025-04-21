@@ -54,14 +54,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip[] hurtSounds;
     [SerializeField] private AudioClip deathSound;
     [SerializeField] private AudioClip pickUpItemSound;
+    [SerializeField] private AudioClip pickUpKeyItemSound;
     [SerializeField] private AudioClip drinkSound;
 
     private Camera m_Camera;
+    private KeyManager m_KeyManager;
     private Animator m_Animator;
     private AudioSource m_AudioSource;
     private InventoryManager m_Inventory;
     private HealthBar healthBar;
     private StatusEffectIcons statusEffectIcons;
+    private KeyUI keyUI;
     private Dash dash;
 
     private Vector3 m_Movement;
@@ -123,6 +126,8 @@ public class PlayerController : MonoBehaviour
         m_Inventory = GetComponent<InventoryManager>();
         healthBar = GetComponentInChildren<HealthBar>();
         statusEffectIcons = GetComponentInChildren<StatusEffectIcons>();
+        keyUI = GetComponentInChildren<KeyUI>();
+        m_KeyManager = GetComponent<KeyManager>();
         playerHealth = maxHealth;
         dash = GetComponentInChildren<Dash>();
         PauseGame(isPaused = true);
@@ -293,11 +298,13 @@ public class PlayerController : MonoBehaviour
     // Plays the interact animation and stops movement. If object
     // is an item, play item pick up sound effect
     //-----------------------------------------------------------
-    public void Interact(bool isItem)
+    public void Interact(bool isItem, bool isKeyItem)
     {
         m_AudioSource.Stop();       // stop move sound effect
         if (isItem) m_AudioSource.PlayOneShot(pickUpItemSound);
+        if (isKeyItem) m_AudioSource.PlayOneShot(pickUpKeyItemSound);
         m_Animator.SetTrigger("Interact");
+
         m_takingAction = true;
         Invoke(nameof(InteractDuration), INTERACT_DURATION);
     }
@@ -306,6 +313,34 @@ public class PlayerController : MonoBehaviour
     private void InteractDuration()
     {
         m_takingAction = false;
+    }
+
+    //-----------------------------------------------------------
+    // Called by the Interactor when a key is interacted with.
+    // Tells the game manager which type of key was picked up and
+    // updates the key UI.
+    //-----------------------------------------------------------
+    public void PickUpKeyItem(KeyItem.KeyType keyType)
+    {
+        switch (keyType)
+        {
+            case KeyItem.KeyType.Shadow:
+                m_KeyManager.PickUpShadowKey();
+                break;
+            case KeyItem.KeyType.Blood:
+                m_KeyManager.PickUpBloodKey();
+                break;
+            case KeyItem.KeyType.Void:
+                m_KeyManager.PickUpVoidKey();
+                break;
+        }
+        UpdateKeyUI();
+    }
+
+    // Updates the key item UI
+    public void UpdateKeyUI()
+    {
+        keyUI.UpdateKeyUI();
     }
 
     //-------------------------------------------------------------------------------------

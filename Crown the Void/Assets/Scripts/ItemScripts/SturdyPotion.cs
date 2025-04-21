@@ -5,6 +5,7 @@ using UnityEngine;
 public class SturdyPotion : MonoBehaviour, IInteractable
 {
     private readonly bool m_isItem = true;
+    private readonly bool m_isKeyItem = false;
     private readonly int m_interactPriority = 0;
     private string m_interactionPrompt = "Sturdy Potion";
     private bool m_hasInteractedWith = false;
@@ -20,6 +21,8 @@ public class SturdyPotion : MonoBehaviour, IInteractable
     public int InteractPriority => m_interactPriority;
 
     public bool IsItem => m_isItem;
+
+    public bool IsKeyItem => m_isKeyItem;
 
     private void Start()
     {
