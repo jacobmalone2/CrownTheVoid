@@ -14,7 +14,7 @@ public class HealthBar : MonoBehaviour
 
     void Start()
     {
-        pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        pc = GetComponentInParent<PlayerController>();
         playerHealth = pc.playerHealth;
         TookDamage();
     }

@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 10}
+  m_AnchoredPosition: {x: 0, y: 20}
   m_SizeDelta: {x: 78.7293, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &110258704
@@ -750,7 +750,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -55.506115, y: -20.231377}
+  m_AnchoredPosition: {x: 20, y: 20}
   m_SizeDelta: {x: 92.0081, y: 30}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &716271356
@@ -984,7 +984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -88, y: 10}
+  m_AnchoredPosition: {x: -88, y: 20}
   m_SizeDelta: {x: 35.7841, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1036736692
@@ -1654,7 +1654,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 88, y: 10}
+  m_AnchoredPosition: {x: 88, y: 20}
   m_SizeDelta: {x: 35.7841, y: 30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1756973682
@@ -8315,6 +8315,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8826c2de0dcce44a89881ba9d9f4247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_equippedItemIndex: 0
+  InventoryUIManager: {fileID: 0}
 --- !u!114 &3818983599248450361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10403,6 +10405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_slotPrefab: {fileID: 1952605912362397253, guid: b822197ccdeed0d4c808938c327b3d66, type: 3}
+  slots: []
 --- !u!222 &5073582848836430309
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16628,6 +16631,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8826c2de0dcce44a89881ba9d9f4247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_equippedItemIndex: 0
+  InventoryUIManager: {fileID: 0}
 --- !u!4 &9181983772168113887
 Transform:
   m_ObjectHideFlags: 0
