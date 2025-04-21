@@ -20453,9 +20453,9 @@ MonoBehaviour:
   dmgPerHit: 10
   maxHealth: 500
   health: 10
-  chargeSpeed: 3
-  spinSpeed: 1
-  runSpeed: 2
+  chargeSpeed: 10
+  spinSpeed: 3
+  runSpeed: 5
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
   battleAxe: {fileID: 919132149410447802}
   SpinningAxePrefab: {fileID: 4509065265536269379, guid: a8e1d0ee8c569234b9e32d5a1ce1c34d, type: 3}
