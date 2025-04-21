@@ -13,7 +13,7 @@ public class BossBehavior : MonoBehaviour
     private const float STUN_DURATION = 3f;
 
     [Header("Attack Settings")]
-    [SerializeField] public int dmgPerHit = 10;
+    [SerializeField] public int dmgPerHit = 1;
     [SerializeField] public int maxHealth = 200;
     [SerializeField] public int health = 10;
     //[SerializeField] FloatingHealthBar healthBar;
@@ -22,6 +22,7 @@ public class BossBehavior : MonoBehaviour
     [SerializeField] private GameObject battleAxe;
     [SerializeField] private GameObject SpinningAxePrefab;
     [SerializeField] private Transform ShootPoint;
+    [SerializeField] private BossSwordCollisionDetection sword;
 
     //Phases
     private bool isPhaseOne = true;
@@ -43,7 +44,7 @@ public class BossBehavior : MonoBehaviour
     GameObject axeOfDeath;
 
     //Assigned in Start
-    [NonSerialized] public Transform player;
+    [NonSerialized] public GameObject player;
     [NonSerialized] public NavMeshAgent agent;
     private Animator enemyAnimator;
 
@@ -58,15 +59,15 @@ public class BossBehavior : MonoBehaviour
 
     private Collider standingCollider;
     private Collider fallenCollider;
-
-    private GameObject playerCharacter;
     PlayerController cs;
 
     // Start is called before the first frame update
     void Start()
     { 
         health = maxHealth;
-        player = GameObject.Find("PlayerObj").transform;
+        player = GameObject.FindWithTag("Player");
+        cs = player.GetComponent<PlayerController>();
+
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
         standingCollider = GetComponent<CapsuleCollider>();
@@ -124,12 +125,12 @@ public class BossBehavior : MonoBehaviour
             }
 
             //Check for Death
-            // if (cs.playerHealth <= 0)
-            // {
-            //     isAlive = false;
-            //     ResetAnimator();
-            //     enemyAnimator.SetBool("isPlayerDead", true);
-            // }
+            if (cs.playerHealth <= 0)
+            {
+                isAlive = false;
+                ResetAnimator();
+                enemyAnimator.SetBool("isPlayerDead", true);
+            }
         }
     }
 
@@ -174,7 +175,6 @@ public class BossBehavior : MonoBehaviour
     IEnumerator BossStunned(float STUN_DURATION)
     {
         yield return new WaitForSeconds(STUN_DURATION);
-        TakeDamage(30);
         isCharging = false;
         isSpinning = false;
     }
@@ -293,7 +293,6 @@ public class BossBehavior : MonoBehaviour
         {
             walkPointSet = true;
         }
-        TakeDamage(1);
     }
 
     IEnumerator WalkPointTimeout()
@@ -361,7 +360,19 @@ public class BossBehavior : MonoBehaviour
                 enemyAnimator.SetBool(parameter.name, false);   
             }          
         }
-    } 
+    }
+
+    // Spawns a timer that prevents the enemy from taking damage
+    public void StopDamageForTime(float time)
+    {
+        canTakeDamage = false;
+        Invoke(nameof(TakeDamageTimer), time);
+    }
+
+    private void TakeDamageTimer()
+    {
+        canTakeDamage = true;
+    }
 
     public void DestroyEnemy()
     {

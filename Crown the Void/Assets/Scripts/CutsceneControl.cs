@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -7,12 +8,13 @@ public class CutsceneControl : MonoBehaviour
 {
     [Header("List of Cameras")]
     [SerializeField] List<GameObject> vCam;
-    [SerializeField] GameObject EndingCam;
+    [NonSerialized] GameObject EndingCam;
     [Header("Timings")]
     [SerializeField] float waitTime = 3f;
     int increment = 0;
     public void Start()
     {
+        EndingCam = GameObject.FindWithTag("vCam");
         StartCoroutine(Phase(vCam, vCam[0], waitTime, increment));
     }
 

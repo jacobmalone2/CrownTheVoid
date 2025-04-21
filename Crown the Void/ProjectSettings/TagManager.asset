@@ -11,6 +11,7 @@ TagManager:
   - Sword
   - Wall
   - Boss
+  - vCam
   layers:
   - Default
   - TransparentFX

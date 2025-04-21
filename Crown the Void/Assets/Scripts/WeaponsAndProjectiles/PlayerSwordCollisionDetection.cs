@@ -39,5 +39,20 @@ public class PlayerSwordCollisionDetection : MonoBehaviour
 
             eb.StopDamageForTime(timeRemaining);
         }
+
+        if (other.gameObject.CompareTag("Boss") && kb.IsAttacking)
+        {
+            BossBehavior bb = other.gameObject.GetComponent<BossBehavior>();
+            bb.TakeDamage(pc.AttackDamage);
+
+            // Play impact sound
+            if (!audioSource.isPlaying) audioSource.PlayOneShot(impactSound);
+
+            // Get time remaining in attack animation and stop enemy from taking damage for remainder of attack
+            float timeRemaining = ATTACK_ANIMATION_DURATION / ANIMATION_SPEED_MULTIPLIER -
+                animator.GetCurrentAnimatorStateInfo(KNIGHT_ANIMATION_LAYER).normalizedTime / ANIMATION_SPEED_MULTIPLIER;
+
+            bb.StopDamageForTime(timeRemaining);
+        }
     }
 }

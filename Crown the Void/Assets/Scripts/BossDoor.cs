@@ -17,7 +17,6 @@ public class BossDoor : MonoBehaviour, IInteractable
 
     public GameObject Player;
     public string SceneName;
-    public float x, y, z;
 
     public int InteractPriority => m_interactPriority;
     public string InteractionPrompt => m_interactionPrompt;
@@ -35,14 +34,19 @@ public class BossDoor : MonoBehaviour, IInteractable
 
     public bool Interact(Interactor interactor)
     {
-        if (m_keyManager.HasShadowKey && m_keyManager.HasBloodKey && m_keyManager.HasVoidKey)
-        {
-            SceneManager.LoadScene(SceneName);
-            Player.transform.position = new Vector3(x, y, z);
-
-            m_hasInteractedWith = true;
-        }
         return m_hasInteractedWith;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject == Player)
+        {
+            if (m_keyManager.HasShadowKey && m_keyManager.HasBloodKey && m_keyManager.HasVoidKey)
+            {
+                SceneManager.LoadScene(SceneName);
+                Player.transform.position = new Vector3(0, 2, -15);
+            }
+        }
     }
 
     public void ShowPopUp(string prompt)
