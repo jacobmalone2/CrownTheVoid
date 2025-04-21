@@ -2828,7 +2828,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
+<<<<<<< HEAD
   m_text: SETTINGS
+=======
+  m_text: CHARACTERS
+>>>>>>> LORDBACKUP
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aefa74be1c8de7748b75eaf97de535a6, type: 2}
   m_sharedMaterial: {fileID: -7003637261056544322, guid: aefa74be1c8de7748b75eaf97de535a6, type: 2}
@@ -3490,7 +3494,11 @@ GameObject:
   - component: {fileID: 1485966220}
   - component: {fileID: 1485966219}
   m_Layer: 5
+<<<<<<< HEAD
   m_Name: Settings
+=======
+  m_Name: CharacterSelect
+>>>>>>> LORDBACKUP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3560,9 +3568,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+<<<<<<< HEAD
       - m_Target: {fileID: 1365322342}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
         m_MethodName: ShowSettings
+=======
+      - m_Target: {fileID: 5900043847187923881, guid: 91c87173003e338489e13526ec309ae0, type: 3}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: CharacterSelect
+>>>>>>> LORDBACKUP
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

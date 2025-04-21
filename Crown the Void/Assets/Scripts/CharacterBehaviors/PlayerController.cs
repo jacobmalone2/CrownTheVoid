@@ -803,4 +803,8 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
         Destroy(gameObject);
     }
+    public void CharacterSelect()
+    {
+        SceneManager.LoadScene("CharacterSelect");
+    }
 }
