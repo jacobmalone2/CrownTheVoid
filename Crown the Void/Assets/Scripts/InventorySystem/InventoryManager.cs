@@ -5,8 +5,9 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     private int m_maxItems = 5;         // Max items inventory can hold
-    private int m_equippedItemIndex = 0;    // The index position of the currently equipped item
+    public int m_equippedItemIndex = 0;    // The index position of the currently equipped item
     public static InventoryManager current; 
+    public InventoryUIManager InventoryUIManager; // Reference to the InventoryUIManager
 
     public enum ItemType        // Enumeration type to represent types of items
     {
@@ -26,7 +27,9 @@ public class InventoryManager : MonoBehaviour
     private void Awake()
     {
         m_inventory = new List<InventoryItem>();
+        InventoryUIManager = gameObject.GetComponentInChildren<InventoryUIManager>();
         current = this;
+
     }
 
     // Check for item swap each frame
@@ -46,6 +49,8 @@ public class InventoryManager : MonoBehaviour
         if (m_inventory.Count < m_maxItems)
         {
             m_inventory.Add(newItem);
+            // Add the item to the inventory UI
+            InventoryUIManager.AddInventorySlot(newItem);
         }
         else
         {
@@ -111,6 +116,8 @@ public class InventoryManager : MonoBehaviour
             Debug.Log(item.Data.id + " Slot " + m_inventory.IndexOf(item));
         }
         Debug.Log("Equipped item index: " + m_equippedItemIndex);
+        // Remove the item from the inventory UI
+        InventoryUIManager.RemoveInventorySlot();
     }
 
     // Swaps the currently equipped item forward by one slot
@@ -122,6 +129,8 @@ public class InventoryManager : MonoBehaviour
             m_equippedItemIndex = 0;
         }
         Debug.Log(m_equippedItemIndex);
+        // Set the equipped item in the UI
+        InventoryUIManager.SelectedItem();
     }
 
     // Swaps the currently equipped item backward by one slot
@@ -133,6 +142,8 @@ public class InventoryManager : MonoBehaviour
             m_equippedItemIndex = m_maxItems - 1;
         }
         Debug.Log(m_equippedItemIndex);
+        // Set the equipped item in the UI
+        InventoryUIManager.SelectedItem();
     }
 
     // Drops the currently held item in front of the player and removes it from the inventory
