@@ -7,6 +7,7 @@ public class CharacterSelection : MonoBehaviour
 {
     [SerializeField] private GameObject knight;
     [SerializeField] private GameObject ranger;
+    [SerializeField] private Loadouts m_loadouts;
     public GameObject[] charactersPrefabs;
     public GameObject[] characters;
     public int selectedCharacter = 0;
@@ -17,6 +18,7 @@ public class CharacterSelection : MonoBehaviour
         characters[selectedCharacter].SetActive(false);
         selectedCharacter = (selectedCharacter + 1) % characters.Length;
         characters[selectedCharacter].SetActive(true);
+        m_loadouts.ChangeCharacterLoadout(selectedCharacter);   // Show the selected character's loadout
     }
 
     public void PreviousCharacter()
@@ -28,6 +30,7 @@ public class CharacterSelection : MonoBehaviour
             selectedCharacter += characters.Length;
         }
         characters[selectedCharacter].SetActive(true);
+        m_loadouts.ChangeCharacterLoadout(selectedCharacter);   // Show the selected character's loadout
     }
     public void StartGame()
     {
