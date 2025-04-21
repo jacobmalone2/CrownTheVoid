@@ -23,6 +23,17 @@ public class BossSwordCollisionDetection : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        pc.TakeDamage(bossBehavior.dmgPerHit);
+        if (bossBehavior.CanDealDamage && canHitPlayer)
+        {
+            pc.TakeDamage(bossBehavior.dmgPerHit);
+            canHitPlayer = false;
+            StartCoroutine(CanDealDamage());
+        }
+    }
+
+    IEnumerator CanDealDamage()
+    {
+        yield return new WaitForSeconds(2f);
+        canHitPlayer = true;
     }
 }

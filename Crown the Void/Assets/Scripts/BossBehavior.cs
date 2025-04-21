@@ -14,10 +14,12 @@ public class BossBehavior : MonoBehaviour
 
     [Header("Attack Settings")]
     [SerializeField] public int dmgPerHit = 1;
-    [SerializeField] public int maxHealth = 200;
+    [SerializeField] public int maxHealth = 500;
     [SerializeField] public int health = 10;
     //[SerializeField] FloatingHealthBar healthBar;
-    [SerializeField] private int walkSpeed = 2;
+    [SerializeField] private int chargeSpeed = 2;
+    [SerializeField] private int spinSpeed = 2;
+    [SerializeField] private int runSpeed = 2;
     [SerializeField] private ParticleSystem deathVFX;
     [SerializeField] private GameObject battleAxe;
     [SerializeField] private GameObject SpinningAxePrefab;
@@ -46,7 +48,7 @@ public class BossBehavior : MonoBehaviour
     //Assigned in Start
     [NonSerialized] public GameObject player;
     [NonSerialized] public NavMeshAgent agent;
-    private Animator enemyAnimator;
+    [NonSerialized] public Animator enemyAnimator;
 
     private Vector3 walkPoint;
     [NonSerialized] private bool walkPointSet;
@@ -140,6 +142,7 @@ public class BossBehavior : MonoBehaviour
         //Charge only happens once that he doesn't change direction
         if (!isCharging)
         {
+            CanDealDamage = true;
             ResetAnimator();
             isCharging = true;
             // Get the target position to look at
@@ -156,7 +159,7 @@ public class BossBehavior : MonoBehaviour
 
             enemyAnimator.SetBool("isCharging", true);
             agent.SetDestination(targetPosition);
-            agent.speed = walkSpeed;
+            agent.speed = chargeSpeed;
             agent.isStopped = false;
             fallenCollider.enabled = false;
             standingCollider.enabled = true;
@@ -174,6 +177,7 @@ public class BossBehavior : MonoBehaviour
 
     IEnumerator BossStunned(float STUN_DURATION)
     {
+        CanDealDamage = false;
         yield return new WaitForSeconds(STUN_DURATION);
         isCharging = false;
         isSpinning = false;
@@ -190,6 +194,7 @@ public class BossBehavior : MonoBehaviour
             enemyAnimator.SetBool("isSpinning", true);
             fallenCollider.enabled = false;
             standingCollider.enabled = true;
+            CanDealDamage = true;
             StartCoroutine(BossSpinney());
         }
 
@@ -197,7 +202,7 @@ public class BossBehavior : MonoBehaviour
         {
             
             agent.SetDestination(player.transform.position);
-            agent.speed = walkSpeed;
+            agent.speed = spinSpeed;
         }
     }
 
@@ -242,8 +247,10 @@ public class BossBehavior : MonoBehaviour
         {
             if (isRunningAway)
             {
+                canDealDamage = false;
                 ResetAnimator();
                 enemyAnimator.SetBool("isCharging", true);
+                agent.speed = runSpeed;
                 RunAway();
             }
         }
@@ -306,13 +313,13 @@ public class BossBehavior : MonoBehaviour
         health -= damage;
         //healthBar.UpdateHealthBar(health, maxHealth);
 
-        if(health <= 105 && isPhaseOne)
+        if(health <= 300 && isPhaseOne)
         {
             ResetAnimator();
             isPhaseOne = false;
             StartCoroutine(PhaseChange(2));
         }
-        else if(health <= 35 && isPhaseTwo)
+        else if(health <= 100 && isPhaseTwo)
         {
             ResetAnimator();
             isPhaseTwo = false;
@@ -337,6 +344,7 @@ public class BossBehavior : MonoBehaviour
 
     IEnumerator PhaseChange(int phase)
     {
+        CanDealDamage = false;
         ResetAnimator();
         fallenCollider.enabled = false;
         standingCollider.enabled = true;
