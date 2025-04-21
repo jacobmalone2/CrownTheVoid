@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
     public float DODGE_CURRENT_COOLDOWN = 0f;
-    private const float DODGE_SPEED_MULTIPLIER = 3f;
+    private const float DODGE_SPEED_MULTIPLIER = 2.5f;
 
     private enum MoveAnim   // Enumeration type to define movement directions for animations
     {
