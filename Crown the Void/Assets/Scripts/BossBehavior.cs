@@ -1,53 +1,63 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class BossBehavior : MonoBehaviour
 {
-    private const float CAN_DAMAGE_AFTER_SHIELD_HIT = 1f;
-    private const float TAKE_DAMAGE_COOLDOWN = 1.0f;
-    private const float STUN_DURATION = 1.72f;
-
-    private bool isStunned = false;
-
-    [Header("AI Fields")]
-    [SerializeField] private float walkPointRange;
-    [SerializeField] private float sightRange, attackRange;
-    [SerializeField] private LayerMask whatIsGround, whatIsPlayer;
-
-    [NonSerialized] public bool playerInSightRange, playerInAttackRange;
-    private Vector3 walkPoint;
-    [NonSerialized] private bool walkPointSet;
+    private const float STUN_DURATION = 3f;
 
     [Header("Attack Settings")]
     [SerializeField] public int dmgPerHit = 10;
-
-    [SerializeField] public int maxHealth = 10;
-    [NonSerialized] public int health = 10;
-    [SerializeField] FloatingHealthBar healthBar;
+    [SerializeField] public int maxHealth = 200;
+    [SerializeField] public int health = 10;
+    //[SerializeField] FloatingHealthBar healthBar;
     [SerializeField] private int walkSpeed = 2;
     [SerializeField] private ParticleSystem deathVFX;
+    [SerializeField] private GameObject battleAxe;
+    [SerializeField] private GameObject SpinningAxePrefab;
+    [SerializeField] private Transform ShootPoint;
+
+    //Phases
+    private bool isPhaseOne = true;
+    private bool isPhaseTwo = false;
+    private bool isPhaseThree = false;
     
+
     private bool isAttacking = false;
+    private bool isCharging = false;
+    private bool isSpinning = false;
+    private bool isRunningAway = false;
     private bool canDealDamage = true;
     private bool canTakeDamage = true;
 
     [Header("Game Settings")]
     [SerializeField] private float startDelay = 7.3f;
-
     [NonSerialized] public bool isAlive = false;
+    private bool hasThrown = false;
+    GameObject axeOfDeath;
 
     //Assigned in Start
     [NonSerialized] public Transform player;
     [NonSerialized] public NavMeshAgent agent;
     private Animator enemyAnimator;
 
+    private Vector3 walkPoint;
+    [NonSerialized] private bool walkPointSet;
+    [SerializeField] private float walkPointRange;
+    [SerializeField] private LayerMask whatIsGround;
+
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
     public bool IsAlive { get => isAlive; }
+
+    private Collider standingCollider;
+    private Collider fallenCollider;
 
     private GameObject playerCharacter;
     PlayerController cs;
@@ -59,20 +69,20 @@ public class BossBehavior : MonoBehaviour
         player = GameObject.Find("PlayerObj").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
+        standingCollider = GetComponent<CapsuleCollider>();
+        fallenCollider = GetComponent<BoxCollider>();
 
         StartCoroutine(StartGame(startDelay));
 
-        playerCharacter = GameObject.FindWithTag("Player");
-        cs = playerCharacter.GetComponent<PlayerController>();
+        // playerCharacter = GameObject.FindWithTag("Player");
+        // cs = playerCharacter.GetComponent<PlayerController>();
 
-        healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.UpdateHealthBar(health, maxHealth);
+        //TODO Get Health Bar
     }
 
     IEnumerator StartGame(float startDelay)
     {
         yield return new WaitForSeconds(startDelay);
-        Debug.Log("isAlive True");
         isAlive = true;
     }
 
@@ -81,36 +91,179 @@ public class BossBehavior : MonoBehaviour
     {
         if(isAlive)
         {
-            //Draws a Sphere from around the Enemy and checks if the Player is within it 
-            //It does this by using the whatIsPlayer Layer
-            playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
-            playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-
-            //Tests where the player is in relation to itself and responds accordingly
-            if (!playerInSightRange && !playerInAttackRange) Patroling();
-
-            if (cs.playerHealth <= 0)
+            if (isPhaseOne)
             {
-                isAlive = false;
-                ResetAnimator();
-                enemyAnimator.SetBool("isPlayerDead", true);
-            }
-        }
+                //Rushes the Player
+                //If Player Dodges he keeps running for 1 more second and falls down
+                //Stays down for 2 seconds
+                //Gets up and does it again
 
+                ChargePlayer();
+
+                //Phase Change after he goes below 105 health
+                //Animation plays between phases
+            }
+            else if (isPhaseTwo)
+            {
+                //Boss spins and follows the player
+                //After a time frame he falls over
+                //Stays down for 2 seconds
+                //Gets up and does it again
+
+                Spinney();
+
+                //Phase change after he goes below 35 health
+                //Animation plays between phases
+            }
+            else if (isPhaseThree)
+            {
+                //Boss throws his axe at player
+                //He only does it once
+                //After player dodges he can the idle boss for the win
+                ThrowAxe();
+            }
+
+            //Check for Death
+            // if (cs.playerHealth <= 0)
+            // {
+            //     isAlive = false;
+            //     ResetAnimator();
+            //     enemyAnimator.SetBool("isPlayerDead", true);
+            // }
+        }
     }
 
-    private void Patroling()
+    //Phase One
+    private void ChargePlayer()
     {
-        isAttacking = false;    // Makes sure player doesn't take damage when not being actively attacked
-
-        if (!enemyAnimator.GetBool("isWalking"))
+        //Charge only happens once that he doesn't change direction
+        if (!isCharging)
         {
-            agent.speed = walkSpeed;
-            
             ResetAnimator();
-            enemyAnimator.SetBool("isWalking", true);
+            isCharging = true;
+            // Get the target position to look at
+            Vector3 targetPosition = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
+
+            // Calculate the "LookAt" rotation
+            Quaternion lookRotation = Quaternion.LookRotation(targetPosition - transform.position, Vector3.up);
+
+            // Extract only the Y rotation 
+            float yRotation = lookRotation.eulerAngles.y;
+
+            // Apply only the Y rotation to the object
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
+
+            enemyAnimator.SetBool("isCharging", true);
+            agent.SetDestination(targetPosition);
+            agent.speed = walkSpeed;
+            agent.isStopped = false;
+            fallenCollider.enabled = false;
+            standingCollider.enabled = true;
+        }
+        else if (agent.transform.position == agent.pathEndPosition && !enemyAnimator.GetBool("isStunned") && isCharging)
+        {
+            ResetAnimator();
+            enemyAnimator.SetBool("isStunned", true);
+            fallenCollider.enabled = true;
+            standingCollider.enabled = false;
+            agent.isStopped = true;
+            StartCoroutine(BossStunned(STUN_DURATION));
+        }
+    }
+
+    IEnumerator BossStunned(float STUN_DURATION)
+    {
+        yield return new WaitForSeconds(STUN_DURATION);
+        TakeDamage(30);
+        isCharging = false;
+        isSpinning = false;
+    }
+
+    //Phase Two
+    private void Spinney()
+    {
+        if(!isSpinning)
+        {
+            ResetAnimator();
+            isSpinning = true;
+            agent.isStopped = false;
+            enemyAnimator.SetBool("isSpinning", true);
+            fallenCollider.enabled = false;
+            standingCollider.enabled = true;
+            StartCoroutine(BossSpinney());
         }
 
+        if(!enemyAnimator.GetBool("isStunned"))
+        {
+            
+            agent.SetDestination(player.transform.position);
+            agent.speed = walkSpeed;
+        }
+    }
+
+    IEnumerator BossSpinney()
+    {
+        yield return new WaitForSeconds(6);
+        agent.isStopped = true;
+        ResetAnimator();
+        enemyAnimator.SetBool("isStunned", true);
+        fallenCollider.enabled = true;
+        standingCollider.enabled = false;
+        StartCoroutine(BossStunned(STUN_DURATION));
+    }
+
+    //Phase Three
+    private void ThrowAxe()
+    {
+        if (!hasThrown)
+        {
+            fallenCollider.enabled = false;
+            standingCollider.enabled = true;
+            agent.isStopped = true;
+            enemyAnimator.SetBool("isThrowing", true);
+
+            // Get the target position to look at
+            Vector3 targetPosition = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
+
+            // Calculate the "LookAt" rotation
+            Quaternion lookRotation = Quaternion.LookRotation(targetPosition - transform.position, Vector3.up);
+
+            // Extract only the Y rotation 
+            float yRotation = lookRotation.eulerAngles.y;
+
+            // Apply only the Y rotation to the object
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
+
+            hasThrown = true;
+            
+            StartCoroutine(ShootDelay(1.5f));
+        }
+        else
+        {
+            if (isRunningAway)
+            {
+                ResetAnimator();
+                enemyAnimator.SetBool("isCharging", true);
+                RunAway();
+            }
+        }
+    }
+
+    public IEnumerator ShootDelay(float shootDelay)
+    {
+        yield return new WaitForSeconds(shootDelay);
+
+        battleAxe.SetActive(false);
+        axeOfDeath = Instantiate(SpinningAxePrefab, ShootPoint.transform.position, SpinningAxePrefab.transform.rotation);
+
+        ResetAnimator();
+        agent.isStopped = false;
+        isRunningAway = true;
+    }
+
+    private void RunAway()
+    {
+        isAttacking = false;    // Makes sure player doesn't take damage when not being actively attacked
 
         if (!walkPointSet) SearchWalkPoint();
 
@@ -124,6 +277,7 @@ public class BossBehavior : MonoBehaviour
         if (distanceToWalkPoint.magnitude < 1f)
         {
             walkPointSet = false;
+            StopCoroutine(WalkPointTimeout());
         }
     }
 
@@ -133,22 +287,44 @@ public class BossBehavior : MonoBehaviour
         float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+        StartCoroutine(WalkPointTimeout());
 
         if(Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
         {
             walkPointSet = true;
         }
+        TakeDamage(1);
+    }
+
+    IEnumerator WalkPointTimeout()
+    {
+        yield return new WaitForSeconds(4f);
+        walkPointSet = false;
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
-        healthBar.UpdateHealthBar(health, maxHealth);
+        //healthBar.UpdateHealthBar(health, maxHealth);
 
-        if (health <= 0)
+        if(health <= 105 && isPhaseOne)
+        {
+            ResetAnimator();
+            isPhaseOne = false;
+            StartCoroutine(PhaseChange(2));
+        }
+        else if(health <= 35 && isPhaseTwo)
+        {
+            ResetAnimator();
+            isPhaseTwo = false;
+            StartCoroutine(PhaseChange(3));
+        }
+        else if (health <= 0 && isPhaseThree)
         {
             isAlive = false;
-
+            agent.isStopped = true;
+            axeOfDeath.SetActive(false);
+            var axeDeathVFX = Instantiate(deathVFX, axeOfDeath.transform.position, Quaternion.identity);
             var deathEffect = Instantiate(deathVFX, transform.position, Quaternion.identity);
             deathEffect.transform.parent = gameObject.transform;
             deathVFX.Play();
@@ -156,26 +332,25 @@ public class BossBehavior : MonoBehaviour
             ResetAnimator();
             enemyAnimator.SetBool("isDying", true);
 
-            Invoke(nameof(DestroyEnemy), 2.5f);
+            Invoke(nameof(DestroyEnemy), 5f);
         }
     }
 
-    public void Stun()
+    IEnumerator PhaseChange(int phase)
     {
-        if (!isStunned)
+        ResetAnimator();
+        fallenCollider.enabled = false;
+        standingCollider.enabled = true;
+        enemyAnimator.SetTrigger("PhaseChange");
+        yield return new WaitForSeconds(3f);
+        if(phase == 2)
         {
-            enemyAnimator.SetTrigger("stun");
-            CanDealDamage = false;
-            isStunned = true;
-
-            Invoke(nameof(EndStun), STUN_DURATION);
+            isPhaseTwo = true;
         }
-    }
-
-    private void EndStun()
-    {
-        CanDealDamage = true;
-        isStunned = false;
+        else if (phase == 3)
+        {
+            isPhaseThree = true;
+        }
     }
 
     public void ResetAnimator()
@@ -193,12 +368,5 @@ public class BossBehavior : MonoBehaviour
         Destroy(gameObject);
     }
 
-    //Draws the Spheres so we can visually see the ranges on the enemy
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightRange);
-    }
+    
 }

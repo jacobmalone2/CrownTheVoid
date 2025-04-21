@@ -9,6 +9,8 @@ TagManager:
   - Arrow
   - Projectile
   - Sword
+  - Wall
+  - Boss
   layers:
   - Default
   - TransparentFX
