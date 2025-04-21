@@ -54,23 +54,17 @@ public class InventoryManager : MonoBehaviour
                 {
                     m_inventory[i] = newItem;
                     m_numItems++;
+                    InventoryUIManager.AddInventorySlot(newItem, i);    // Add the item to the inventory UI
                     break;
                 }
             }
-            // Add the item to the inventory UI
-            //InventoryUIManager.AddInventorySlot(newItem);
         }
         else
         {
             DropItem();
             m_inventory[m_equippedItemIndex] = newItem;
+            InventoryUIManager.AddInventorySlot(newItem, m_equippedItemIndex); // Add the item to the inventory UI
         }
-        for (int i = 0; i < m_inventory.Length; i++)
-        {
-            if (m_inventory[i] != null) Debug.Log(m_inventory[i].Data.id + " Slot " + i);
-            else Debug.Log("Empty slot");
-        }
-        Debug.Log("Equipped item index: " + m_equippedItemIndex);
     }
 
     // Returns the type of item currently equipped
@@ -116,40 +110,38 @@ public class InventoryManager : MonoBehaviour
         m_inventory[m_equippedItemIndex] = null;
         m_numItems--;
 
-        for (int i = 0; i < m_inventory.Length; i++)
-        {
-            if (m_inventory[i] != null) Debug.Log(m_inventory[i].Data.id + " Slot " + i);
-            else Debug.Log("Empty slot");
-        }
-        Debug.Log("Equipped item index: " + m_equippedItemIndex);
         // Remove the item from the inventory UI
-        //InventoryUIManager.RemoveInventorySlot();
+        InventoryUIManager.RemoveInventorySlot(m_equippedItemIndex);
     }
 
     // Swaps the currently equipped item forward by one slot
     private void SwapForward()
     {
+        int prevSelectedIndx = m_equippedItemIndex;
+
         m_equippedItemIndex++;
         if (m_equippedItemIndex >= m_maxItems)
         {
             m_equippedItemIndex = 0;
         }
-        Debug.Log(m_equippedItemIndex);
-        // Set the equipped item in the UI
-        //InventoryUIManager.SelectedItem();
+
+        // Set the selected item in the UI
+        InventoryUIManager.SelectedItem(prevSelectedIndx);
     }
 
     // Swaps the currently equipped item backward by one slot
     private void SwapBackward()
     {
+        int prevSelectedIndx = m_equippedItemIndex;
+
         m_equippedItemIndex--;
         if (m_equippedItemIndex < 0)
         {
             m_equippedItemIndex = m_maxItems - 1;
         }
-        Debug.Log(m_equippedItemIndex);
+
         // Set the equipped item in the UI
-        //InventoryUIManager.SelectedItem();
+        InventoryUIManager.SelectedItem(prevSelectedIndx);
     }
 
     // Drops the currently held item in front of the player and removes it from the inventory

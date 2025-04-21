@@ -7,53 +7,39 @@ using UnityEngine.UI;
 
 public class InventoryUIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject m_slotPrefab; // Prefab for the inventory slot
-    [SerializeField] private GameObject[] slots; // Reference to the inventory panel
-    private InventoryManager m_inventoryManager; // Reference to the InventoryManager
-    private int invSize; // Size of the inventory
-    private Color32 selectedColor = new Color32(88, 19, 125, 209);
-    private Color32 defaultColor = new Color32(0, 0, 0, 209);
+    [SerializeField] private GameObject[] slots;              // Reference to inventory slots
+    private InventoryManager m_inventoryManager;        // Reference to the InventoryManager
+    
+
     public void Start()
     {
         m_inventoryManager = gameObject.GetComponentInParent<InventoryManager>();
-    }
-    public void SelectedItem()
-    {
-        // set to default color
-        for (int i = 0; i < slots.Length; i++)
-        {
-            if (i != m_inventoryManager.EquippedItemIndex)
-            {
-                slots[i].GetComponentInChildren<Image>().color = defaultColor;
-            }
-        }
-        slots[m_inventoryManager.EquippedItemIndex].GetComponentInChildren<Image>().color = selectedColor;        
+
+        // Highlight first slot when we start
+        slots[m_inventoryManager.EquippedItemIndex].GetComponent<Slot>().SelectSlot();
     }
 
-    public void AddInventorySlot(InventoryItem item)
+    // Highlights the selected item inventory slot
+    public void SelectedItem(int prevSelectedIndx)
     {
-        invSize = m_inventoryManager.NumItems;
-        //obj.transform.SetParent(transform, false);
-        Slot slot = slots[invSize - 1].GetComponent<Slot>();
-        Debug.Log("Slot: " + slot);
-        slot.Set(item);
-        //slots[invSize - 1] = slot.gameObject;
-        // Set the slot to be active
-        slots[invSize - 1].SetActive(true);
+        // Set currently selected slot color
+        slots[m_inventoryManager.EquippedItemIndex].GetComponent<Slot>().SelectSlot();
+
+        // Reset previously selected slot color
+        slots[prevSelectedIndx].GetComponent<Slot>().DeselectSlot();
     }
-    public void RemoveInventorySlot()
+
+    // Adds the new item's data to it's inventory slot and activates it
+    public void AddInventorySlot(InventoryItem item, int slotPosition)
+    {
+        // Configure item data for slot
+        slots[slotPosition].GetComponent<Slot>().Set(item);
+    }
+
+    // Deactivates the the inventory slot for the removed item
+    public void RemoveInventorySlot(int slotPosition)
     {
         // Deactivate the last slot in the inventory
-        slots[m_inventoryManager.EquippedItemIndex].SetActive(false);
-        invSize = m_inventoryManager.NumItems;
-        //Shift the slots down
-        for (int i = m_inventoryManager.EquippedItemIndex; i < invSize - 1; i++)
-        {
-            InventoryItem item = m_inventoryManager.Inventory[i + 1];
-            Slot slot = slots[invSize - 1].GetComponent<Slot>();
-            slot.Set(item);
-
-        }
-
+        slots[slotPosition].GetComponent<Slot>().RemoveItem();
     }
 }
