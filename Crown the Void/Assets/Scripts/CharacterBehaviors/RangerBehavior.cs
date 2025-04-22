@@ -301,7 +301,7 @@ public class RangerBehavior : MonoBehaviour
         m_aimLine.SetPositions(m_aimPoints);
 
         if (m_foundTarget && (m_target.collider.gameObject.CompareTag("Enemy") || 
-            m_target.collider.gameObject.CompareTag("Sword")))
+            m_target.collider.gameObject.CompareTag("Sword") || m_target.collider.gameObject.CompareTag("Boss")))
         {
             m_aimLine.startColor = Color.red;
             m_aimLine.endColor = Color.red;
