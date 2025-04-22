@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
     public GameObject pauseMenu;
 
     public bool isPaused = false;
+    public bool isCutscenePlaying = false;
 
 
 
@@ -164,8 +165,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            // Only move if no action is active
-            if (!m_takingAction)
+            // Only move if no action is active (and game isn't paused)
+            if (!m_takingAction && !isPaused)
             {
                 //-------------------
                 //  Player movement
@@ -216,7 +217,7 @@ public class PlayerController : MonoBehaviour
             UseItem();
         }
         // Pause game
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !isCutscenePlaying)
         {
             PauseGame(isPaused);
         }

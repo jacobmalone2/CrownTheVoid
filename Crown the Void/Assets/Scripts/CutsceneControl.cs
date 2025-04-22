@@ -11,9 +11,15 @@ public class CutsceneControl : MonoBehaviour
     [NonSerialized] GameObject EndingCam;
     [Header("Timings")]
     [SerializeField] float waitTime = 3f;
+    private PlayerController pc;
     int increment = 0;
     public void Start()
     {
+        // Pause player controls while cutscene is playing
+        pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        pc.isCutscenePlaying = true;
+        pc.isPaused = true;
+
         EndingCam = GameObject.FindWithTag("vCam");
         StartCoroutine(Phase(vCam, vCam[0], waitTime, increment));
     }
@@ -35,6 +41,10 @@ public class CutsceneControl : MonoBehaviour
         {
             CloseCams(vCam);
             EndingCam.SetActive(true);
+
+            // Resume player control when cutscene is over
+            pc.isCutscenePlaying = false;
+            pc.isPaused = false;
         }
     }
 

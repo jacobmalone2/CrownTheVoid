@@ -39,7 +39,10 @@ public class PlayerSwordCollisionDetection : MonoBehaviour
 
             eb.StopDamageForTime(timeRemaining);
         }
+    }
 
+    private void OnTriggerStay(Collider other)
+    {
         if (other.gameObject.CompareTag("Boss") && kb.IsAttacking)
         {
             BossBehavior bb = other.gameObject.GetComponent<BossBehavior>();

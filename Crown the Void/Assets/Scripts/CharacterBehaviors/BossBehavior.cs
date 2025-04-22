@@ -25,6 +25,7 @@ public class BossBehavior : MonoBehaviour
     [SerializeField] private GameObject SpinningAxePrefab;
     [SerializeField] private Transform ShootPoint;
     [SerializeField] private BossSwordCollisionDetection sword;
+    [SerializeField] private FloatingHealthBar healthBar;
 
     //Phases
     private bool isPhaseOne = true;
@@ -81,6 +82,7 @@ public class BossBehavior : MonoBehaviour
         // cs = playerCharacter.GetComponent<PlayerController>();
 
         //TODO Get Health Bar
+        healthBar.UpdateHealthBar(health, maxHealth);
     }
 
     IEnumerator StartGame(float startDelay)
@@ -310,8 +312,11 @@ public class BossBehavior : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        //healthBar.UpdateHealthBar(health, maxHealth);
+        if (canTakeDamage && isAlive)
+        {
+            health -= damage;
+            healthBar.UpdateHealthBar(health, maxHealth);
+        }
 
         if(health <= 300 && isPhaseOne)
         {
