@@ -12,6 +12,7 @@ TagManager:
   - Wall
   - Boss
   - vCam
+  - Win
   layers:
   - Default
   - TransparentFX

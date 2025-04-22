@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 5339406485011056851}
   - component: {fileID: 7222005933444658286}
   - component: {fileID: 3530651640096340579}
+  - component: {fileID: 3244845830713042195}
   m_Layer: 0
   m_Name: Skeleton_Golem_Axe_Large
   m_TagString: Untagged
@@ -174,7 +175,29 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8145331143278987775, guid: 55ac8b3dc32210644a56a1fc66093c75, type: 3}
+--- !u!64 &3244845830713042195
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9143014094393838009}
+  m_Material: {fileID: 13400000, guid: c843c5a10afc0624aaef4d5229891aad, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5

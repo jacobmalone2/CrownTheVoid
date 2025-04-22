@@ -139,9 +139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a13931661a111144892b479e7eee382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winText: {fileID: 0}
-  mainMenuButton: {fileID: 0}
-  GrayOut: {fileID: 0}
 --- !u!65 &14033637
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14934,18 +14931,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1708372718}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.02, y: 0.049999997, z: 0.099999994}
+  m_LocalScale: {x: 0.02, y: 0.05, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1130467159}
   m_Father: {fileID: 3395628685881664343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 5.13}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4.62}
+  m_SizeDelta: {x: 1143, y: 460}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1708372720
 MonoBehaviour:
@@ -20843,16 +20840,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dmgPerHit: 10
-  maxHealth: 500
+  maxHealth: 800
   health: 10
   chargeSpeed: 10
-  spinSpeed: 3
+  spinSpeed: 4
   runSpeed: 5
   deathVFX: {fileID: 5412931901836558882, guid: e59cf66ecdc19f44da32b41078a98975, type: 3}
   battleAxe: {fileID: 919132149410447802}
   SpinningAxePrefab: {fileID: 4509065265536269379, guid: a8e1d0ee8c569234b9e32d5a1ce1c34d, type: 3}
   ShootPoint: {fileID: 584883103}
-  sword: {fileID: 0}
   healthBar: {fileID: 1708372720}
   startDelay: 18
   walkPointRange: 10

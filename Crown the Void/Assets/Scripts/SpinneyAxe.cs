@@ -7,13 +7,15 @@ public class SpinneyAxe : MonoBehaviour
 {
     [SerializeField] GameObject SpinneyAxeVisuals;
     [SerializeField] float rotationSpeed = -500f;
+    private PlayerController pc;
     Rigidbody rb;
     Vector3 velocity;
 
     void Start()
     {
+        pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody>();
-        rb.AddForce(Vector3.forward * -20.0f, ForceMode.VelocityChange);
+        rb.AddForce(Vector3.forward * -7.0f, ForceMode.VelocityChange);
     }
 
     // Update is called once per frame
@@ -27,6 +29,7 @@ public class SpinneyAxe : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("The Player Dies");
+            pc.TakeDamage(100);
             this.gameObject.SetActive(false);
         }
 

@@ -14,7 +14,7 @@ public class BossBehavior : MonoBehaviour
 
     [Header("Attack Settings")]
     [SerializeField] public int dmgPerHit = 1;
-    [SerializeField] public int maxHealth = 500;
+    [SerializeField] public int maxHealth = 800;
     [SerializeField] public int health = 10;
     //[SerializeField] FloatingHealthBar healthBar;
     [SerializeField] private int chargeSpeed = 2;
@@ -24,7 +24,6 @@ public class BossBehavior : MonoBehaviour
     [SerializeField] private GameObject battleAxe;
     [SerializeField] private GameObject SpinningAxePrefab;
     [SerializeField] private Transform ShootPoint;
-    [SerializeField] private BossSwordCollisionDetection sword;
     [SerializeField] private FloatingHealthBar healthBar;
 
     //Phases
@@ -55,6 +54,7 @@ public class BossBehavior : MonoBehaviour
     [NonSerialized] private bool walkPointSet;
     [SerializeField] private float walkPointRange;
     [SerializeField] private LayerMask whatIsGround;
+    [NonSerialized] private GameObject YouWinUI;
 
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
@@ -67,6 +67,7 @@ public class BossBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     { 
+        //axeOfDeath = Instantiate(SpinningAxePrefab, ShootPoint.transform.position, SpinningAxePrefab.transform.rotation);
         health = maxHealth;
         player = GameObject.FindWithTag("Player");
         cs = player.GetComponent<PlayerController>();
@@ -75,6 +76,7 @@ public class BossBehavior : MonoBehaviour
         enemyAnimator = GetComponent<Animator>();
         standingCollider = GetComponent<CapsuleCollider>();
         fallenCollider = GetComponent<BoxCollider>();
+        YouWinUI = GameObject.FindWithTag("Win");
 
         StartCoroutine(StartGame(startDelay));
 
@@ -144,7 +146,6 @@ public class BossBehavior : MonoBehaviour
         //Charge only happens once that he doesn't change direction
         if (!isCharging)
         {
-            CanDealDamage = true;
             ResetAnimator();
             isCharging = true;
             // Get the target position to look at
@@ -179,7 +180,6 @@ public class BossBehavior : MonoBehaviour
 
     IEnumerator BossStunned(float STUN_DURATION)
     {
-        CanDealDamage = false;
         yield return new WaitForSeconds(STUN_DURATION);
         isCharging = false;
         isSpinning = false;
@@ -196,7 +196,6 @@ public class BossBehavior : MonoBehaviour
             enemyAnimator.SetBool("isSpinning", true);
             fallenCollider.enabled = false;
             standingCollider.enabled = true;
-            CanDealDamage = true;
             StartCoroutine(BossSpinney());
         }
 
@@ -249,7 +248,6 @@ public class BossBehavior : MonoBehaviour
         {
             if (isRunningAway)
             {
-                canDealDamage = false;
                 ResetAnimator();
                 enemyAnimator.SetBool("isCharging", true);
                 agent.speed = runSpeed;
@@ -318,13 +316,13 @@ public class BossBehavior : MonoBehaviour
             healthBar.UpdateHealthBar(health, maxHealth);
         }
 
-        if(health <= 300 && isPhaseOne)
+        if(health <= 500 && isPhaseOne)
         {
             ResetAnimator();
             isPhaseOne = false;
             StartCoroutine(PhaseChange(2));
         }
-        else if(health <= 100 && isPhaseTwo)
+        else if(health <= 200 && isPhaseTwo)
         {
             ResetAnimator();
             isPhaseTwo = false;
@@ -349,7 +347,6 @@ public class BossBehavior : MonoBehaviour
 
     IEnumerator PhaseChange(int phase)
     {
-        CanDealDamage = false;
         ResetAnimator();
         fallenCollider.enabled = false;
         standingCollider.enabled = true;
@@ -390,6 +387,20 @@ public class BossBehavior : MonoBehaviour
     public void DestroyEnemy()
     {
         Destroy(gameObject);
+        YouWinUI.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void CanDamage(string isDmgActive)
+    {
+        if(isDmgActive == "true")
+        {
+            canDealDamage = true;    
+        }
+        else if (isDmgActive == "false")
+        {
+            canDealDamage = false;
+        }
     }
 
     
