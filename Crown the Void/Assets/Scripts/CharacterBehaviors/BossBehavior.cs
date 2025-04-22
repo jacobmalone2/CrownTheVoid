@@ -54,7 +54,6 @@ public class BossBehavior : MonoBehaviour
     [NonSerialized] private bool walkPointSet;
     [SerializeField] private float walkPointRange;
     [SerializeField] private LayerMask whatIsGround;
-    [NonSerialized] private GameObject YouWinUI;
 
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
@@ -76,7 +75,6 @@ public class BossBehavior : MonoBehaviour
         enemyAnimator = GetComponent<Animator>();
         standingCollider = GetComponent<CapsuleCollider>();
         fallenCollider = GetComponent<BoxCollider>();
-        YouWinUI = GameObject.FindWithTag("Win");
 
         StartCoroutine(StartGame(startDelay));
 
@@ -387,7 +385,7 @@ public class BossBehavior : MonoBehaviour
     public void DestroyEnemy()
     {
         Destroy(gameObject);
-        YouWinUI.SetActive(true);
+        cs.WinGame();
         Time.timeScale = 0;
     }
 

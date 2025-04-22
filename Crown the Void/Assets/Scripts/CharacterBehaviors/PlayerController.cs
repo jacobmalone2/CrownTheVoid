@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
     public GameObject grayOut;
     public GameObject dashCooldown;
     public GameObject pauseMenu;
+    public GameObject winScreen;
 
     public bool isPaused = false;
     public bool isCutscenePlaying = false;
@@ -785,6 +786,15 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    //-----------------------------------------------------------------------
+    // Called when player defeats the boss. Shows the win screen.
+    //-----------------------------------------------------------------------
+    public void WinGame()
+    {
+        winScreen.SetActive(true);
+    }
+
     // Restart level and reset player functions
     public void RestartLevel()
     {

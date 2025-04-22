@@ -5729,6 +5729,7 @@ MonoBehaviour:
   grayOut: {fileID: 580940246391576184}
   dashCooldown: {fileID: 2793595676513199531}
   pauseMenu: {fileID: 2342303307004401846}
+  winScreen: {fileID: 5684208350806564074}
   isPaused: 0
   isCutscenePlaying: 0
 --- !u!95 &5565198935035242299
