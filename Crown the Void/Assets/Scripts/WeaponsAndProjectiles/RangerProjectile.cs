@@ -40,6 +40,12 @@ public class RangerProjectile : MonoBehaviour
             collision.gameObject.GetComponent<AudioSource>().PlayOneShot(hitTargetSound);   // Play arrow impact sound effect
             DestroyProjectile();
         }
+        else if (collision.gameObject.CompareTag("Boss"))   // Deal damage to boss
+        {
+            collision.gameObject.GetComponent<BossBehavior>().TakeDamage(pc.AttackDamage);
+            collision.gameObject.GetComponent<AudioSource>().PlayOneShot(hitTargetSound);   // Play arrow impact sound effect
+            DestroyProjectile();
+        }
     }
 
     private void DestroyProjectile()
