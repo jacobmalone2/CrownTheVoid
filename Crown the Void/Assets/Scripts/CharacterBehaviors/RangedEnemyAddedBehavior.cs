@@ -6,6 +6,7 @@ public class RangedEnemyAddedBehavior : MonoBehaviour
 {
     private EnemyBehavior eB;
     private Animator enemyAnimator;
+    private AudioSource audioSource;
 
     [SerializeField] private GameObject projectile;
 
@@ -15,6 +16,8 @@ public class RangedEnemyAddedBehavior : MonoBehaviour
     [SerializeField] private float launchForce = 50f;
     [SerializeField] private float destroyTimer = 50f;
 
+    [SerializeField] private AudioClip fireArrowSound;
+
     private bool canShoot = true;
 
     // Start is called before the first frame update
@@ -22,6 +25,7 @@ public class RangedEnemyAddedBehavior : MonoBehaviour
     {
         eB = GetComponent<EnemyBehavior>();
         enemyAnimator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -57,6 +61,9 @@ public class RangedEnemyAddedBehavior : MonoBehaviour
         yield return new WaitForSeconds(shootDelay);
 
         GameObject projectileShot = Instantiate(projectile, ShootPoint.position, Quaternion.Euler(-90, transform.rotation.eulerAngles.y, 0));
+
+        // Play fire arrow sound effect
+        audioSource.PlayOneShot(fireArrowSound);
 
         // Apply the direction
         Rigidbody projectileRigidbody = projectileShot.GetComponent<Rigidbody>();

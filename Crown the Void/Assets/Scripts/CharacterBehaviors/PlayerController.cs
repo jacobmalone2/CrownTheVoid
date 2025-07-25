@@ -8,14 +8,18 @@ public class PlayerController : MonoBehaviour
 {
     private const float INTERACT_DURATION = 1.3f;
     private const float ITEM_USE_DURATION = 1.6f;
-    private const float TIME_TO_HEAL = 0.6f;
-    private const float HEAL_FACTOR = 0.25f;    // Percentage of max health to heal by when using health potions
-    private const float ATTACK_DURATION = 0.7f;
-    private const float BASH_DURATION = 0.4f;
+    private const float ITEM_THROW_DURATION = 1.36f;
+    private const float SPELL_CAST_DURATION = 4.2f;
+    private const float TIME_TO_DRINK = 0.6f;
+    private const float HEAL_FACTOR = 0.50f;
+    private const int ATTACK_BOOST_MULT = 2;
+    private const int DAMAGE_DIVIDER = 2;
+    private const float BUFF_TIMER_TICK = 0.1f;
+    private const float BUFF_DURATION = 30f;
     private const float DODGE_DURATION = 0.25f;
     private const float DODGE_COOLDOWN = 1f;
     public float DODGE_CURRENT_COOLDOWN = 0f;
-    private const float DODGE_SPEED_MULTIPLIER = 4f;
+    private const float DODGE_SPEED_MULTIPLIER = 2.5f;
 
     private enum MoveAnim   // Enumeration type to define movement directions for animations
     {
@@ -26,46 +30,84 @@ public class PlayerController : MonoBehaviour
         Right
     }
 
+    [Header("Player Stats")]
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float rotationSpeed = 10.0f;
     [SerializeField] private int maxHealth = 100;
     [SerializeField] public int playerHealth;
-    [SerializeField] private GameObject swordObject;
-    [SerializeField] private GameObject potionObject;
+    [SerializeField] private int attackDamage = 10;
+    [SerializeField] private float throwForce = 5f;
+    [SerializeField] private float throwUpwardForce = 2f;
+
+    [Header("Equipment References")]
+    [SerializeField] private GameObject primaryWeapon;
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private List<GameObject> items;
+
+    [Header("Projectiles")]
+    [SerializeField] private GameObject activeBomb;
+    [SerializeField] private GameObject fireStorm;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip dashSound;
+    [SerializeField] private AudioClip throwSound;
+    [SerializeField] private AudioClip[] hurtSounds;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip pickUpItemSound;
+    [SerializeField] private AudioClip pickUpKeyItemSound;
+    [SerializeField] private AudioClip drinkSound;
 
     private Camera m_Camera;
+    private KeyManager m_KeyManager;
     private Animator m_Animator;
+    private AudioSource m_AudioSource;
     private InventoryManager m_Inventory;
     private HealthBar healthBar;
+    private StatusEffectIcons statusEffectIcons;
+    private KeyUI keyUI;
     private Dash dash;
 
     private Vector3 m_Movement;
     private MoveAnim m_moveAnim;
 
     private float m_camDistanceToPlayer = 15.5f;
-    private bool m_isAttacking = false;
+
+    private bool m_isStopped = true;
     private bool m_isDodging = false;
-    private bool m_isBashing = false;
     private bool m_canDodge = true;
-    private bool m_isBlocking = false;
     private bool m_takingAction = false;
+    private bool m_isAiming = false;
+    private bool m_isShooting = false;
+    private bool m_isReloading = false;
     private bool m_isAlive = true;
+    private bool m_defenceUp = false;
+    private bool m_attackUp = false;
+    private float m_boostDamageTimer = BUFF_DURATION;
+    private float m_boostDefenceTimer = BUFF_DURATION;
+    
+    public bool TakingAction { get => m_takingAction; set => m_takingAction = value; }
+    public int AttackDamage { get => attackDamage; }
+    public bool IsAlive { get => m_isAlive; }
+    public bool IsAiming { get => m_isAiming; set => m_isAiming = value; }
+    public bool IsShooting { get => m_isShooting; set => m_isShooting = value; }
+    public bool IsReloading { get => m_isReloading; set => m_isReloading = value; }
 
-    public bool IsAttacking { get => m_isAttacking; }
-    public bool IsBlocking { get => m_isBlocking; }
-    public bool IsBashing { get => m_isBashing; }
-    public bool TakingAction { get => m_takingAction; }
-
+    [Header("Player object reference")]
     public GameObject newPlayerObject;  // Used to spawn a new player character on reset
 
-    // UI
+    [Header("UI References")]
     public GameObject mainMenuButton;
     public GameObject retryLevelButton;
     public GameObject deathText;
     public GameObject grayOut;
     public GameObject dashCooldown;
+    public GameObject pauseMenu;
+    public GameObject winScreen;
 
-    
+    public bool isPaused = false;
+    public bool isCutscenePlaying = false;
+
+
 
     //------------------------------
     // Persistant player data, yay!
@@ -82,10 +124,15 @@ public class PlayerController : MonoBehaviour
     {
         m_Camera = Camera.main;
         m_Animator = GetComponent<Animator>();
+        m_AudioSource = GetComponent<AudioSource>();
         m_Inventory = GetComponent<InventoryManager>();
         healthBar = GetComponentInChildren<HealthBar>();
+        statusEffectIcons = GetComponentInChildren<StatusEffectIcons>();
+        keyUI = GetComponentInChildren<KeyUI>();
+        m_KeyManager = GetComponent<KeyManager>();
         playerHealth = maxHealth;
         dash = GetComponentInChildren<Dash>();
+        PauseGame(isPaused = true);
     }
 
     //---------------------------------------------------
@@ -95,19 +142,32 @@ public class PlayerController : MonoBehaviour
     {
         if (m_isAlive)
         {
-            //-------------------
-            //  Player ability
-            //-------------------
+            // Check for universal action each frame
 
-            CheckForAbility();
+            CheckForAction();
         }
     }
-        void FixedUpdate()
+    void FixedUpdate()
     {
         if (m_isAlive)
         {
-            // Only move and rotate if no ability is active
-            if (!m_takingAction)
+            // If player is already dodging, continue to apply movement
+            if (m_isDodging)
+            {
+                if (m_Movement.magnitude == 0)
+                {
+                    transform.position = transform.position - transform.forward *
+                        Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+                }
+                else
+                {
+                    transform.position = transform.position + m_Movement *
+                        Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
+                }
+            }
+
+            // Only move if no action is active (and game isn't paused)
+            if (!m_takingAction && !isPaused)
             {
                 //-------------------
                 //  Player movement
@@ -115,12 +175,16 @@ public class PlayerController : MonoBehaviour
 
                 MovePlayer();
 
-                //-------------------
-                //  Player animation
-                //-------------------
+                //----------------------------
+                //  Player movement animation
+                //----------------------------
 
                 AnimatePlayer();
+            }
 
+            // Only rotate if no action is active or if player is aiming as the ranger
+            if (!m_takingAction || (m_isAiming && !m_isShooting && !m_isReloading))
+            {
                 //-------------------
                 //  Player Rotation
                 //-------------------
@@ -132,67 +196,32 @@ public class PlayerController : MonoBehaviour
 
     //-------------------------------------------------------------------------
     //*************************************************************************
-    //                             ABILITY METHODS
+    //                             ACTION METHODS
     //*************************************************************************
     //-------------------------------------------------------------------------
 
 
     //----------------------------------------------------------------------------------------
-    // Checks whether player input a combat ability this frame. If so, play combat
-    // animation, use the ability, and block other actions, including movement and rotation.
+    // Checks whether player input an action this frame. If so, calls a method to handle
+    // the action.
     //----------------------------------------------------------------------------------------
-    private void CheckForAbility()
+    private void CheckForAction()
     {
-        // Sword swing attack
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && !m_takingAction)
-        {
-            Attack();
-        }
         // Directional dodge
-        if ((Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge) || m_isDodging)
+        if (Input.GetKeyDown(KeyCode.Space) && !m_takingAction && m_canDodge && !isPaused)
         {
             Dodge();
         }
-        // Start Block
-        if (Input.GetMouseButtonDown((int)MouseButton.Right) && !m_isDodging)
-        {
-            StartBlock();
-        }
-        // Shield Bash
-        if (Input.GetMouseButtonDown((int)MouseButton.Left) && m_isBlocking)
-        {
-            ShieldBash();
-        }
-        // End Block
-        if (Input.GetMouseButtonUp((int)MouseButton.Right) && m_isBlocking)
-        {
-            EndBlock();
-        }
         // Use Item
-        if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction)
+        if (Input.GetKeyDown(KeyCode.Q) && !m_takingAction && !isPaused)
         {
             UseItem();
         }
-    }
-
-    //-------------------------------------------------------------------------
-    // Triggers the attack animation, set the attack and ability flags, and
-    // initiate attack cooldown
-    //-------------------------------------------------------------------------
-    private void Attack()
-    {
-        m_Animator.SetTrigger("Attack");
-        m_isAttacking = true;
-        m_takingAction = true;
-        StartCoroutine(AttackCooldown());
-    }
-
-    // Cooldown for sword swing attack
-    private IEnumerator AttackCooldown()
-    {
-        yield return new WaitForSeconds(ATTACK_DURATION);
-        m_isAttacking = false;
-        if (!m_isBlocking) m_takingAction = false;
+        // Pause game
+        if (Input.GetKeyDown(KeyCode.Escape) && !isCutscenePlaying)
+        {
+            PauseGame(isPaused);
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -202,47 +231,34 @@ public class PlayerController : MonoBehaviour
     //-------------------------------------------------------------------------
     private void Dodge()
     {
-        if (m_isDodging)    // If player is already dodging, continue to apply movement
+        // Apply dodge animation according to movement direction
+        switch (m_moveAnim)
         {
-            if (m_Movement.magnitude == 0)
-            {
-                transform.position = transform.position - transform.forward * 
-                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
-            }
-            else
-            {
-                transform.position = transform.position + m_Movement *
-                    Time.deltaTime * playerSpeed * DODGE_SPEED_MULTIPLIER;
-            }
+            case MoveAnim.Idle:
+                m_Animator.SetTrigger("DodgeBackward");
+                break;
+            case MoveAnim.Forward:
+                m_Animator.SetTrigger("DodgeForward");
+                break;
+            case MoveAnim.Backward:
+                m_Animator.SetTrigger("DodgeBackward");
+                break;
+            case MoveAnim.Right:
+                m_Animator.SetTrigger("DodgeRight");
+                break;
+            case MoveAnim.Left:
+                m_Animator.SetTrigger("DodgeLeft");
+                break;
         }
-        else                // Otherwise, initiate the dodge
-        {
-            // Apply dodge animation according to movement direction
-            switch (m_moveAnim)
-            {
-                case MoveAnim.Idle:
-                    m_Animator.SetTrigger("DodgeBackward");
-                    break;
-                case MoveAnim.Forward:
-                    m_Animator.SetTrigger("DodgeForward");
-                    break;
-                case MoveAnim.Backward:
-                    m_Animator.SetTrigger("DodgeBackward");
-                    break;
-                case MoveAnim.Right:
-                    m_Animator.SetTrigger("DodgeRight");
-                    break;
-                case MoveAnim.Left:
-                    m_Animator.SetTrigger("DodgeLeft");
-                    break;
-            }
 
-            m_isDodging = true;
-            DODGE_CURRENT_COOLDOWN = 0f;
-            dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
-            m_takingAction = true;
-            StartCoroutine(DodgeDuration());
-        }
+        m_AudioSource.Stop();                   // Stop move sound effect
+        m_AudioSource.PlayOneShot(dashSound);   // Play dodge sound effect
+
+        m_isDodging = true;
+        DODGE_CURRENT_COOLDOWN = 0f;
+        dash.UpdateDashCooldown(DODGE_CURRENT_COOLDOWN);
+        m_takingAction = true;
+        StartCoroutine(DodgeDuration());
     }
 
     // Continues dodge for its duration
@@ -279,48 +295,18 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    //---------------------------------------------------------------------------
-    // Triggers the raise shield animation and sets flags for starting to block
-    //---------------------------------------------------------------------------
-    private void StartBlock()
-    {
-        m_Animator.SetBool("IsBlocking", true);
-        m_takingAction = true;
-        m_isBlocking = true;
-    }
-
-    //------------------------------------------------------------------------------
-    // Triggers the bash animation and sets the shield bash flag for bash duration
-    //------------------------------------------------------------------------------
-    private void ShieldBash()
-    {
-        m_Animator.SetTrigger("Bash");
-        m_isBashing = true;
-        Invoke(nameof(ShieldBashReset), BASH_DURATION);
-    }
-
-    private void ShieldBashReset()
-    {
-        m_isBashing = false;
-    }
-
-    //----------------------------------------------------------------
-    // Ends the block animation and clears the flags for blocking
-    //----------------------------------------------------------------
-    private void EndBlock()
-    {
-        m_Animator.SetBool("IsBlocking", false);
-        m_takingAction = false;
-        m_isBlocking = false;
-    }
-
     //-----------------------------------------------------------
     // Called by the Interactor when interacting with an object.
-    // Plays the interact animation and stops movement.
+    // Plays the interact animation and stops movement. If object
+    // is an item, play item pick up sound effect
     //-----------------------------------------------------------
-    public void Interact()
+    public void Interact(bool isItem, bool isKeyItem)
     {
+        m_AudioSource.Stop();       // stop move sound effect
+        if (isItem) m_AudioSource.PlayOneShot(pickUpItemSound);
+        if (isKeyItem) m_AudioSource.PlayOneShot(pickUpKeyItemSound);
         m_Animator.SetTrigger("Interact");
+
         m_takingAction = true;
         Invoke(nameof(InteractDuration), INTERACT_DURATION);
     }
@@ -329,6 +315,34 @@ public class PlayerController : MonoBehaviour
     private void InteractDuration()
     {
         m_takingAction = false;
+    }
+
+    //-----------------------------------------------------------
+    // Called by the Interactor when a key is interacted with.
+    // Tells the game manager which type of key was picked up and
+    // updates the key UI.
+    //-----------------------------------------------------------
+    public void PickUpKeyItem(KeyItem.KeyType keyType)
+    {
+        switch (keyType)
+        {
+            case KeyItem.KeyType.Shadow:
+                m_KeyManager.PickUpShadowKey();
+                break;
+            case KeyItem.KeyType.Blood:
+                m_KeyManager.PickUpBloodKey();
+                break;
+            case KeyItem.KeyType.Void:
+                m_KeyManager.PickUpVoidKey();
+                break;
+        }
+        UpdateKeyUI();
+    }
+
+    // Updates the key item UI
+    public void UpdateKeyUI()
+    {
+        keyUI.UpdateKeyUI();
     }
 
     //-------------------------------------------------------------------------------------
@@ -343,10 +357,71 @@ public class PlayerController : MonoBehaviour
             case InventoryManager.ItemType.NullItem:
                 break;
             case InventoryManager.ItemType.HealthPotion:
+                m_AudioSource.Stop();       // stop move sound effect
                 m_Inventory.RemoveItem();
                 HealthPotionEffect();
                 break;
+            case InventoryManager.ItemType.FuryPotion:
+                if (!m_attackUp)
+                {
+                    m_AudioSource.Stop();
+                    m_Inventory.RemoveItem();
+                    FuryPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.SturdyPotion:
+                if (!m_defenceUp)
+                {
+                    m_AudioSource.Stop();
+                    m_Inventory.RemoveItem();
+                    SturdyPotionEffect();
+                }
+                break;
+            case InventoryManager.ItemType.Bomb:
+                m_AudioSource.Stop();
+                m_Inventory.RemoveItem();
+                BombEffect();
+                break;
+            case InventoryManager.ItemType.FireStormTome:
+                m_AudioSource.Stop();
+                m_Inventory.RemoveItem();
+                FireStormEffect();
+                break;
         }
+    }
+
+    //---------------------------------------------
+    // Pauses the game and reveals the pause menu
+    //---------------------------------------------
+    public void PauseGame(bool pause)
+    {
+        m_AudioSource.Stop();       // stop move sound effect
+        if (isPaused)
+        {
+            Time.timeScale = 1;
+            pauseMenu.SetActive(false);
+            isPaused = false;
+            // Enable aim line if player is ranger and aiming
+            if (gameObject.name.Equals("PlayerObj_Ranger") && m_isAiming)
+            {
+                GetComponent<LineRenderer>().enabled = true;
+            }
+        }
+        else
+        {
+            Time.timeScale = 0;
+            pauseMenu.SetActive(true);
+            isPaused = true;
+            // Disable aim line if player is ranger
+            if (gameObject.name.Equals("PlayerObj_Ranger"))
+            {
+                GetComponent<LineRenderer>().enabled = false;
+            }
+        }
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     //-------------------------------------------------------------------------
@@ -425,25 +500,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Apply running animation based on the found movement direction.
+    // Apply running animation and sound effect based on the found movement direction.
     private void AnimatePlayer()
     {
         switch(m_moveAnim)
         {
             case MoveAnim.Idle:
                 m_Animator.SetTrigger("IsIdle");
+                if (!m_isStopped)
+                {
+                    m_isStopped = true;
+                    m_AudioSource.Stop();
+                }
                 break;
             case MoveAnim.Forward:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingForward");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Backward:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingBackward");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Right:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingRight");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
             case MoveAnim.Left:
+                m_isStopped = false;
                 m_Animator.SetTrigger("IsMovingLeft");
+                if (!m_AudioSource.isPlaying) m_AudioSource.Play();
                 break;
         }
     }
@@ -473,34 +561,183 @@ public class PlayerController : MonoBehaviour
     //-------------------------------------------------------------------------
 
     //------------------------------------------------------------------
-    // Triggers the item use animation, switches out the sword for the
-    // potion game object, and heals the player for a percentage of
-    // max health after a delay.
+    // Triggers the health potion effect. Plays item use animation,
+    // then heals player after a short delay.
     //------------------------------------------------------------------
     private void HealthPotionEffect()
     {
         m_Animator.SetTrigger("UseItem");
         m_takingAction = true;
 
-        swordObject.SetActive(false);
-        potionObject.SetActive(true);
+        primaryWeapon.SetActive(false);
+        items[0].SetActive(true);
 
-        Invoke(nameof(Heal), TIME_TO_HEAL);
-        Invoke(nameof(ItemUseDuration), ITEM_USE_DURATION);
+        Invoke(nameof(Heal), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(0));
     }
 
     private void Heal()
     {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
         playerHealth += (int)(HEAL_FACTOR * maxHealth);
         if (playerHealth > maxHealth) playerHealth = maxHealth;
         healthBar.TookDamage(); // Update health bar
     }
 
-    private void ItemUseDuration()
+    //------------------------------------------------------------------
+    // Triggers the fury potion effect. Plays item use animation,
+    // then boosts player attack damage for a duration.
+    //------------------------------------------------------------------
+    private void FuryPotionEffect()
     {
-        swordObject.SetActive(true);
-        potionObject.SetActive(false);
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        primaryWeapon.SetActive(false);
+        items[1].SetActive(true);
+
+        Invoke(nameof(BoostDamage), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(1));
+    }
+
+    private void BoostDamage()
+    {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
+        attackDamage *= ATTACK_BOOST_MULT;
+        m_attackUp = true;
+        statusEffectIcons.ShowAttackUp();   // update UI
+        
+        InvokeRepeating(nameof(BoostDamageTimerTick), 0f, BUFF_TIMER_TICK);
+    }
+
+    private void BoostDamageTimerTick()
+    {
+        // Tick down timer and update UI
+        m_boostDamageTimer -= BUFF_TIMER_TICK;
+        statusEffectIcons.UpdateAttackUp(m_boostDamageTimer / BUFF_DURATION);
+
+        // When timer runs out, deactivate buff, update UI, and cancel timer and reset for next time
+        if (m_boostDamageTimer <= 0)
+        {
+            attackDamage /= ATTACK_BOOST_MULT;
+            m_attackUp = false;
+            m_boostDamageTimer = BUFF_DURATION;
+            statusEffectIcons.HideAttackUp();
+
+            CancelInvoke(nameof(BoostDamageTimerTick));
+        }
+    }
+
+    //------------------------------------------------------------------
+    // Triggers the sturdy potion effect. Plays item use animation,
+    // then negates a portion of incoming damage.
+    //------------------------------------------------------------------
+    private void SturdyPotionEffect()
+    {
+        m_Animator.SetTrigger("UseItem");
+        m_takingAction = true;
+
+        primaryWeapon.SetActive(false);
+        items[2].SetActive(true);
+
+        Invoke(nameof(BoostDefence), TIME_TO_DRINK);
+        StartCoroutine(ItemUseDuration(2));
+    }
+
+    private void BoostDefence()
+    {
+        m_AudioSource.PlayOneShot(drinkSound);  // Play drinking sound effect
+
+        m_defenceUp = true;
+        statusEffectIcons.ShowDefenceUp();  // update UI
+        InvokeRepeating(nameof(BoostDefenceTimerTick), 0f, BUFF_TIMER_TICK);
+    }
+
+    private void BoostDefenceTimerTick()
+    {
+        // Tick down timer and update UI
+        m_boostDefenceTimer -= BUFF_TIMER_TICK;
+        statusEffectIcons.UpdateDefenceUp(m_boostDefenceTimer / BUFF_DURATION);
+
+        // When timer runs out, deactivate buff, update UI, and cancel timer and reset for next time
+        if (m_boostDefenceTimer <= 0)
+        {
+            m_defenceUp = false;
+            m_boostDefenceTimer = BUFF_DURATION;
+            statusEffectIcons.HideDefenceUp();
+
+            CancelInvoke(nameof(BoostDefenceTimerTick));
+        }
+
+        
+    }
+
+    //------------------------------------------------------------------
+    // Triggers the bomb item effect. Starts the throw animation, and
+    // launches an active bomb projectile.
+    //------------------------------------------------------------------
+    private void BombEffect()
+    {
+        m_Animator.SetTrigger("ThrowItem");
+        m_takingAction = true;
+
+        primaryWeapon.SetActive(false);
+        items[3].SetActive(true);
+
+        StartCoroutine(ItemThrowDuration());
+    }
+
+    private void FireStormEffect()
+    {
+        m_Animator.SetTrigger("CastSpell");
+        m_takingAction = true;
+
+        Instantiate(fireStorm, transform.position, Quaternion.identity);
+        m_defenceUp = true;
+        primaryWeapon.SetActive(false);
+        items[4].SetActive(true);
+
+        StartCoroutine(SpellCastDuration(4));
+    }
+
+    public void ThrowItem()
+    {
+        // Instantiate an active bomb, then apply the throwing force to its rigidbody
+        GameObject bomb = Instantiate(activeBomb, throwPoint.position, Quaternion.identity);
+        Rigidbody bombRb = bomb.GetComponent<Rigidbody>();
+        Vector3 forceToAdd = transform.forward * throwForce + transform.up * throwUpwardForce;
+
+        bombRb.AddForce(forceToAdd, ForceMode.Impulse);
+
+        m_AudioSource.PlayOneShot(throwSound);  // Play throw sound effect
+
+        items[3].SetActive(false);
+    }
+
+    private IEnumerator ItemUseDuration(int itemIndex)
+    {
+        yield return new WaitForSeconds(ITEM_USE_DURATION);
+        primaryWeapon.SetActive(true);
+        items[itemIndex].SetActive(false);
         m_takingAction = false;
+    }
+
+    private IEnumerator ItemThrowDuration()
+    {
+        yield return new WaitForSeconds(ITEM_THROW_DURATION);
+        primaryWeapon.SetActive(true);
+        m_takingAction = false;
+    }
+
+    private IEnumerator SpellCastDuration(int itemIndex)
+    {
+        yield return new WaitForSeconds(SPELL_CAST_DURATION);
+        primaryWeapon.SetActive(true);
+        items[itemIndex].SetActive(false);
+        m_takingAction = false;
+        m_defenceUp = false;
     }
 
     //-------------------------------------------------------------------------
@@ -517,6 +754,7 @@ public class PlayerController : MonoBehaviour
     {
         m_isAlive = false;
         m_Animator.SetTrigger("Die");
+        m_AudioSource.PlayOneShot(deathSound);  // Play death sound effect
         // Death UI
         retryLevelButton.SetActive(true);
         mainMenuButton.SetActive(true);
@@ -531,20 +769,36 @@ public class PlayerController : MonoBehaviour
     {
         if (!m_isDodging)
         {
+            if (m_defenceUp) hitPoints /= DAMAGE_DIVIDER;
+
             playerHealth -= hitPoints;
             healthBar.TookDamage();
-        }
-        
-        if (playerHealth <= 0)
-        {
-            Die();
+
+            if (playerHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                // Stop other sounds and play hurt sound effect
+                m_AudioSource.Stop();
+                m_AudioSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length)]);
+            }
         }
     }
+
+    //-----------------------------------------------------------------------
+    // Called when player defeats the boss. Shows the win screen.
+    //-----------------------------------------------------------------------
+    public void WinGame()
+    {
+        winScreen.SetActive(true);
+    }
+
     // Restart level and reset player functions
     public void RestartLevel()
     {
         SceneManager.LoadScene("StartingRoom");
-
         retryLevelButton.SetActive(false);
         mainMenuButton.SetActive(false);
         deathText.SetActive(false);
@@ -552,12 +806,20 @@ public class PlayerController : MonoBehaviour
         playerHealth = maxHealth;
         healthBar.TookDamage();
         
-        Instantiate(newPlayerObject, new Vector3(0, 0, 0), Quaternion.identity).name = "PlayerObj";
+        Instantiate(newPlayerObject, new Vector3(0, 0.2f, 0), Quaternion.identity);
         Destroy(gameObject);
     }
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
         Destroy(gameObject);
+    }
+    public void QuitToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+    public void CharacterSelect()
+    {
+        SceneManager.LoadScene("CharacterSelect");
     }
 }

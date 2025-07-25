@@ -35,6 +35,11 @@ public class EnemyBehavior : MonoBehaviour
     private bool canDealDamage = true;
     private bool canTakeDamage = true;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip[] hurtSounds;
+    [SerializeField] private AudioClip[] stunSounds;
+    [SerializeField] private AudioClip deathSound;
+
     [Header("Game Settings")]
     [SerializeField] private float startDelay = 7.3f;
 
@@ -44,10 +49,12 @@ public class EnemyBehavior : MonoBehaviour
     [NonSerialized] public Transform player;
     [NonSerialized] public NavMeshAgent agent;
     private Animator enemyAnimator;
+    private AudioSource audioSource;
 
     public bool CanDealDamage { get => canDealDamage; set => canDealDamage = value; }
     public bool IsAttacking { get => isAttacking; set => isAttacking = value; }
     public bool IsAlive { get => isAlive; }
+    public bool IsStunned { get => isStunned; }
 
     private GameObject playerCharacter;
     PlayerController cs;
@@ -56,9 +63,11 @@ public class EnemyBehavior : MonoBehaviour
     void Start()
     { 
         health = maxHealth;
-        player = GameObject.Find("PlayerObj").transform;
+        player = GameObject.FindWithTag("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyAnimator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.PlayDelayed(UnityEngine.Random.Range(0, 3f));
 
         StartCoroutine(StartGame(startDelay));
 
@@ -66,7 +75,7 @@ public class EnemyBehavior : MonoBehaviour
         cs = playerCharacter.GetComponent<PlayerController>();
 
         healthBar = GetComponentInChildren<FloatingHealthBar>();
-        healthBar.UpdateHealthBar(health, 10);
+        healthBar.UpdateHealthBar(health, maxHealth);
     }
 
     IEnumerator StartGame(float startDelay)
@@ -87,6 +96,11 @@ public class EnemyBehavior : MonoBehaviour
 
             //Tests where the player is in relation to itself and responds accordingly
             if (!playerInSightRange && !playerInAttackRange) Patroling();
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
 
             if (cs.playerHealth <= 0)
             {
@@ -123,6 +137,7 @@ public class EnemyBehavior : MonoBehaviour
         if (distanceToWalkPoint.magnitude < 1f)
         {
             walkPointSet = false;
+            StopCoroutine(WalkPointTimeout());
         }
     }
 
@@ -132,6 +147,7 @@ public class EnemyBehavior : MonoBehaviour
         float randomX = UnityEngine.Random.Range(-walkPointRange, walkPointRange);
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+        StartCoroutine(WalkPointTimeout());
 
         if(Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
         {
@@ -139,24 +155,52 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
+    IEnumerator WalkPointTimeout()
+    {
+        yield return new WaitForSeconds(4f);
+        walkPointSet = false;
+    }
+
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        healthBar.UpdateHealthBar(health, maxHealth);
-
-        if (health <= 0)
+        if (canTakeDamage && isAlive)
         {
-            isAlive = false;
+            health -= damage;
+            healthBar.UpdateHealthBar(health, maxHealth);
 
-            var deathEffect = Instantiate(deathVFX, transform.position, Quaternion.identity);
-            deathEffect.transform.parent = gameObject.transform;
-            deathVFX.Play();
+            if (health <= 0)
+            {
+                isAlive = false;
 
-            ResetAnimator();
-            enemyAnimator.SetBool("isDying", true);
+                var deathEffect = Instantiate(deathVFX, transform.position, Quaternion.identity);
+                deathEffect.transform.parent = gameObject.transform;
+                deathVFX.Play();
 
-            Invoke(nameof(DestroyEnemy), 2.5f);
+                ResetAnimator();
+                enemyAnimator.SetBool("isDying", true);
+                audioSource.PlayOneShot(deathSound);    // Play death sound effect
+
+                Invoke(nameof(DestroyEnemy), 2.5f);
+            }
+            else
+            {
+                // Stop other sounds and play hurt sound effect
+                audioSource.Stop();
+                audioSource.PlayOneShot(hurtSounds[UnityEngine.Random.Range(0, hurtSounds.Length)]);
+            }
         }
+    }
+    
+    // Spawns a timer that prevents the enemy from taking damage
+    public void StopDamageForTime(float time)
+    {
+        canTakeDamage = false;
+        Invoke(nameof(TakeDamageTimer), time);
+    }
+
+    private void TakeDamageTimer()
+    {
+        canTakeDamage = true;
     }
 
     public void Stun()
@@ -164,8 +208,14 @@ public class EnemyBehavior : MonoBehaviour
         if (!isStunned)
         {
             enemyAnimator.SetTrigger("stun");
+            // Stop other sounds and play stun sound effect
+            audioSource.Stop();
+            audioSource.PlayOneShot(stunSounds[UnityEngine.Random.Range(0, hurtSounds.Length)]);
+
             CanDealDamage = false;
             isStunned = true;
+
+            agent.speed = 0;
 
             Invoke(nameof(EndStun), STUN_DURATION);
         }
@@ -175,6 +225,8 @@ public class EnemyBehavior : MonoBehaviour
     {
         CanDealDamage = true;
         isStunned = false;
+
+        agent.speed = walkSpeed;
     }
 
     public void ResetAnimator()

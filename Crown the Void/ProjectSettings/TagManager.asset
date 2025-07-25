@@ -9,6 +9,10 @@ TagManager:
   - Arrow
   - Projectile
   - Sword
+  - Wall
+  - Boss
+  - vCam
+  - Win
   layers:
   - Default
   - TransparentFX
@@ -19,7 +23,7 @@ TagManager:
   - whatisplayer
   - whatisground
   - enemy
-  - 
+  - projectiles
   - 
   - 
   - 

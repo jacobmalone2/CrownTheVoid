@@ -31,8 +31,11 @@ public class MeleeEnemyAddedBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (eB.playerInSightRange && !eB.playerInAttackRange) ChasePlayer();
-        if (eB.playerInSightRange && eB.playerInAttackRange) MeleePlayer();
+        if(eB.isAlive)
+        {
+            if (eB.playerInSightRange && !eB.playerInAttackRange) ChasePlayer();
+            if (eB.playerInSightRange && eB.playerInAttackRange) MeleePlayer();
+        }
     }
 
     private void ChasePlayer()
@@ -92,5 +95,10 @@ public class MeleeEnemyAddedBehavior : MonoBehaviour
     public void CheckDealDamage()
     {
         sword.CheckDealDamage();
+    }
+
+    public void PlaySwingSoundEffect()
+    {
+        sword.PlaySwingSoundEffect();
     }
 }
